@@ -5,7 +5,7 @@ This is a summary of how I configured Vim for Python. Big thanks to the team at 
 - Went [here](https://www.vim.org/download.php#pc) to download the [official Windows executable installer](https://ftp.nluug.nl/pub/vim/pc/gvim82.exe).
 - Performed a "Typical" install.
 - Added the directory with the Vim executables `C:\Program Files (x86)\Vim\vim82\` to the system path.
-- Test the installation with `> vim --v` or `vi --v`
+- Tested the installation with `> vim --v` or `vi --v`
 
 2. Configuration
 - Created `.vimrc` in the `$HOMEPATH` directory. To check the directory, type `:echo $HOMEPATH` in vim.
@@ -50,6 +50,5 @@ call vundle#end()            " required
 filetype plugin indent on    " required
 
 ```
-- Later on, we can open vim and run `:PluginInstall` to install plugins.
-Vim
+Can now open vim and run `:PluginInstall` to install new plugins.
 
