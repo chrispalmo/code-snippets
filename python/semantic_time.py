@@ -2,7 +2,7 @@ from math import floor
 
 def time_breakdown(ms):
 	"""Converts an integer representing number of milliseconds into a dictionary 
-	representing days, hours, minutes, seconds and milliseconds. Output numbers 
+	representing days, hours, minutes, seconds and milliseconds. Output is 
 	are rounded down to the nearest whole number.
 
 	Parameters:
