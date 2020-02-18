@@ -113,7 +113,18 @@ def main():
 	print("\n")
 	print(time_breakdown(one_day_plus_one_minute))
 	print(time_breakdown_string(one_day_plus_one_minute))
-	print("\n")
+
+	print("\nPlurality is not ignored:\n")
+	one_second = 1000
+	two_seconds = 2000
+	one_minute_one_second = 361000
+	two_minute_one_second = 721000
+	two_minute_two_second = 722000
+	print(time_breakdown_string(one_second))
+	print(time_breakdown_string(two_seconds))
+	print(time_breakdown_string(one_minute_one_second))
+	print(time_breakdown_string(two_minute_one_second))
+	print(time_breakdown_string(two_minute_two_second))
 
 	# session.date_stopped = datetime.utcnow()
 	# scrape_time = (session.date_stopped - session.date_started).total_seconds() * 1000
