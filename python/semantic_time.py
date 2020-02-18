@@ -1,13 +1,16 @@
 from math import floor
 
 def time_breakdown(ms):
-	"""Converts an integer representing number of milliseconds into a dictionary representing days, hours, minutes, seconds and milliseconds. Output numbers are rounded down to the nearest whole number.
+	"""Converts an integer representing number of milliseconds into a dictionary 
+	representing days, hours, minutes, seconds and milliseconds. Output numbers 
+	are rounded down to the nearest whole number.
 
 	Parameters:
 		ms (integer): number of milliseconds.
 
 	Returns:
-		(dictionary): breakdown of total days, hours, minutes, seconds and milliseconds.
+		(dictionary): breakdown of total days, hours, minutes, seconds and 
+		milliseconds.
 
 	Example usage:
 		>>> time_breakdown = time_breakdown(123456789)
@@ -31,7 +34,8 @@ def time_breakdown(ms):
 	}
 
 def time_breakdown_string(ms, granularity=5):
-	"""Converts an integer representing number of milliseconds into a string that uses natural language to represent the time quantity.
+	"""Converts an integer representing number of milliseconds into a string that 
+	uses natural language to represent the time quantity.
 
 	Parameters:
 		ms (integer): number of milliseconds.
@@ -89,46 +93,51 @@ def time_breakdown_string(ms, granularity=5):
 def main():
 	from datetime import datetime
 
-	print("\nTo orbit the sun, it takes Mercury:\n")
 	mercury_orbit_period = 7600608000
-	print(time_breakdown(mercury_orbit_period))
-	print(time_breakdown_string(mercury_orbit_period, 1))
-	print(time_breakdown_string(mercury_orbit_period, 2))
-	print(time_breakdown_string(mercury_orbit_period, 3))
-	print(time_breakdown_string(mercury_orbit_period, 4))
+	print(f"""
+To orbit the sun, it takes Mercury:
 
-	print("\nIgnores 'zero' units:\n")
+	{time_breakdown(mercury_orbit_period)}
+	{time_breakdown_string(mercury_orbit_period, 1)}
+	{time_breakdown_string(mercury_orbit_period, 2)}
+	{time_breakdown_string(mercury_orbit_period, 3)}
+	{time_breakdown_string(mercury_orbit_period, 4)}
+	""")
+
 	one_day_minus_one_second = 1*24*60*60*1000 - 1000
 	one_day_exactly = 1*24*60*60*1000
 	one_day_plus_one_second = 1*24*60*60*1000 + 1000
 	one_day_plus_one_minute = 1*24*60*60*1000 + 1000*60
-	print(time_breakdown(one_day_minus_one_second))
-	print(time_breakdown_string(one_day_minus_one_second))
-	print("\n")
-	print(time_breakdown(one_day_exactly))
-	print(time_breakdown_string(one_day_exactly))
-	print("\n")
-	print(time_breakdown(one_day_plus_one_second))
-	print(time_breakdown_string(one_day_plus_one_second))
-	print("\n")
-	print(time_breakdown(one_day_plus_one_minute))
-	print(time_breakdown_string(one_day_plus_one_minute))
+	print(f"""
+Ignores 'zero' units:
 
-	print("\nPlurality is not ignored:\n")
+	{time_breakdown(one_day_minus_one_second)}
+	{time_breakdown_string(one_day_minus_one_second)}
+	
+	{time_breakdown(one_day_exactly)}
+	{time_breakdown_string(one_day_exactly)}
+
+	{time_breakdown(one_day_plus_one_second)}
+	{time_breakdown_string(one_day_plus_one_second)}
+
+	{time_breakdown(one_day_plus_one_minute)}
+	{time_breakdown_string(one_day_plus_one_minute)}
+	""")
+
 	one_second = 1000
 	two_seconds = 2000
 	one_minute_one_second = 361000
 	two_minute_one_second = 721000
 	two_minute_two_second = 722000
-	print(time_breakdown_string(one_second))
-	print(time_breakdown_string(two_seconds))
-	print(time_breakdown_string(one_minute_one_second))
-	print(time_breakdown_string(two_minute_one_second))
-	print(time_breakdown_string(two_minute_two_second))
+	print(f"""
+Plurality is considered:
 
-	# session.date_stopped = datetime.utcnow()
-	# scrape_time = (session.date_stopped - session.date_started).total_seconds() * 1000
-	# scrape_time_string = time_breakdown.time_breakdown_string(scrape_time, granularity=2)
+	{time_breakdown_string(one_second)}
+	{time_breakdown_string(two_seconds)}
+	{time_breakdown_string(one_minute_one_second)}
+	{time_breakdown_string(two_minute_one_second)}
+	{time_breakdown_string(two_minute_two_second)}
+	""")
 
 if __name__ == "__main__":
 	main()
