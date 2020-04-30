@@ -43,7 +43,7 @@ function hootsuite {start chrome.exe "https://hootsuite.com/dashboard#/streams"}
 ## News
 function ii {start chrome.exe "https://www.intelligentinvestor.com.au/identity/logon?returnUrl=%2F&prefix=2"}
 function reddit {start chrome.exe "https://www.reddit.com/"}
-function ychn {start chrome.exe "https://news.ycombinator.com/"}
+function ychn {start chrome.exe "https://news.ycombinator.com/"}
 function youtube {start chrome.exe "https://www.youtube.com/"}
 
 # General Folders
@@ -55,3 +55,5 @@ function drawer {cd "~\Dropbox\desk-drawer"}
 
 # Navigate to the default startup folder
 dev
+
+$test123 = "hello world"
