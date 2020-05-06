@@ -20,7 +20,8 @@ Get-ChildItem `
 # Quick actions
 function sps {start powershell}
 function spse {start powershell; exit}
-function server {py -m simpleHTTPServer}
+function server {py -m http.server}
+function keyrate {~\Dropbox\portable-apps\windows\key-repeat-rate\keyrate\keyrate.exe 180 18}
 
 # Web Apps
 
@@ -53,7 +54,8 @@ function profile {cd "~\Documents\WindowsPowerShell\"}
 function desk {cd "~\Desktop\"}
 function drawer {cd "~\Dropbox\desk-drawer"}
 
-# Navigate to the default startup folder
-dev
+# Set Key Repeat Rate
 
-$test123 = "hello world"
+# Navigate to the default startup folder
+keyrate
+dev
