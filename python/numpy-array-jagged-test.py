@@ -17,4 +17,4 @@ if __name__ == "__main__":
 	try:
 		assert(not is_jagged(b))
 	except:
-		raise JaggedArrayError(f"Array dimensions are inconsistent, which will cause transposition to fail. This is probably due to blank values in visum. Please replace blank values with the string 'NULL' and try again.")
+		raise JaggedArrayError(f"Array dimensions are inconsistent - this will cause transposition to fail.")
