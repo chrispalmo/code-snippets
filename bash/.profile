@@ -146,3 +146,5 @@ alias gpu='gbn | xargs git push --set-upstream origin'
 alias grf='gcd ; git diff --staged --name-only | fzf -m --height=8 | xargs git reset ; cd -'
 alias grmf='gcd ; git diff --name-only --diff-filter=U | fzf -m --height=8 | xargs git rm ; cd -'
 
+# Web
+alias so='open https://stackoverflow.com/questions/ask'
