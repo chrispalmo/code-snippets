@@ -1,0 +1,29 @@
+{
+	"bootstrapped": true,
+	"in_process_packages":
+	[
+	],
+	"installed_packages":
+	[
+		"Angular 2 Snippets (John Papa)",
+		"BetterFindBuffer",
+		"DocBlockr",
+		"Dracula Color Scheme",
+		"FileIcons",
+		"Focus File on Sidebar",
+		"Git",
+		"HyperClick",
+		"JsPrettier",
+		"Markdown Extended",
+		"Markdown HTML Preview",
+		"MarkdownPreview",
+		"Ngx HTML",
+		"Package Control",
+		"Refresh File and Folders",
+		"Sass",
+		"SublimeLinter",
+		"SublimeLinter-eslint",
+		"Terminus",
+		"TypeScript"
+	]
+}
