@@ -83,46 +83,66 @@ alias h='history'
 alias ppath="echo $PATH | tr ':' '\n'" #print path
 alias :q="exit"
 
+alias who-is-using-my-connection="lsof -i tcp:{####}"
+alias kill-the-process-using-my-connection="kill -9 {PID}" # kill PROCESS_WITH_PID using ####
+
 # =====
 # Git
 # =====
 
+alias ghcp="o https://github.com/chrispalmo"
+
 alias ga='git add'
+alias ga.='ga .'
+alias gb='git branch' # list branches
+alias gbc='git branch --show-current | pbcopy'
+alias gba='git branch -a' # list all branches
+alias gc='git commit -a' # -a, --all: stage modified/deleted, but dont "ga."
+alias gcd='cd $(git rev-parse --show-toplevel)' # cd to repo root
+alias gca='git commit -a --amend ' # overwrite last commit
+alias gd='git diff'
+alias gdn='git diff --name-only'
+alias gds='gd --staged'
+alias gdsn='gd --staged --name-only'
+alias gl='git log'
+alias gln='git log --name-only' # log includes list of files changed
+alias glm='git log --merge' # list of commits that conflict during merge
+alias go='git checkout' # switch branch
+alias gob='git checkout -b' # create new branch, switch to it
+alias gp='git push'
+alias grbi="git rebase --interactive" # use: `grbi [commit-hash-before-changes]. effect: Merge together all commits AFTER [commit-hash]. Refer: https://www.internalpointers.com/post/squash-commits-into-one-git. Use `git push --force origin [branch-name], but this isn't great... aim to avoid rebasing and squashing with by using git commit --amend in the first place.
+alias gs='git status'
+alias gsh='git show'
+alias gst='git stash save' # `gst "message"` locally save uncommited changes (both staged and unstaged)
+alias gsta='git stash apply' # apply stashed changes to working copy, without deleting from stash.
+alias gstd='git stash drop' # delete a stash
+alias gstk='git stash save --keep-index' # stash with message but keep index intact (like a periodic "progress save")
+alias gstl='git stash list'
+alias gstp='git stash pop' # remove stashed changes, reapply to working copy.
+alias gr='git restore' # unstage all changes. use --hard to revert changed files.
+alias gu='git pull --rebase'
+alias git-undo-last-commit='git reset --soft HEAD~1'
+
+# Still investigating...
 alias gcd='cd $(git rev-parse --show-toplevel)'
 alias gfiles='echo "$(git ls-files --others --exclude-standard ; git diff --name-only)"'
 alias gaf='gcd ; gfiles | fzf -m --height=8 | xargs git add ; cd -'
 alias gap='ga -p'
 alias gapf='FILE=$(gfiles | fzf --height=8) && gap $FILE'
-alias ga.='ga .'
 alias ga.ds='ga . && gds'
 alias ga.st='ga . && gst'
-alias gb='git branch'
 alias gbdm='gb --merged | grep -v "\(^\*\)\|\(^  master$\)" | xargs git branch -d'
 alias gbn='git rev-parse --abbrev-ref HEAD'
-alias gc='git commit'
 alias gcp='git cherry-pick'
-alias gd='git diff'
-alias gds='gd --staged'
 alias gf='git fetch'
-alias gl='git log'
 alias gm='git merge'
 alias gmm='gm master'
-alias go='git checkout'
-alias gob='git checkout -b'
 alias gof='gcd ; git diff --name-only | fzf --height=8 | xargs git checkout ; cd -'
 alias gom='git checkout master'
 alias gop='git checkout -'
 alias gomu='gom && gu'
 alias gomup='gom && gu && gop'
-alias gp='git push'
 alias gpu='gbn | xargs git push --set-upstream origin'
-alias gr='git reset'
 alias grf='gcd ; git diff --staged --name-only | fzf -m --height=8 | xargs git reset ; cd -'
 alias grmf='gcd ; git diff --name-only --diff-filter=U | fzf -m --height=8 | xargs git rm ; cd -'
-alias gs='git status'
-alias gst='git stash'
-alias gsts='git stash save'
-alias gstk='git stash save --keep-index'
-alias gstl='git stash list'
-alias gstp='git stash pop'
-alias gu='git pull --rebase'
+
