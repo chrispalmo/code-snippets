@@ -14,7 +14,7 @@ safe_rm()
                 mv $file ~/.Trash
             # Target exists and conflicts with target in Trash
             elif [ -e ~/.Trash/$file ]; then
-                # Increment target name until 
+                # Increment target name until
                 # there is no longer a conflict
                 i=1
                 while [ -e ~/.Trash/$file.$i ];
@@ -95,11 +95,13 @@ alias ghcp="o https://github.com/chrispalmo"
 alias ga='git add'
 alias ga.='ga .'
 alias gb='git branch' # list branches
-alias gbc='git branch --show-current | pbcopy'
 alias gba='git branch -a' # list all branches
+alias gbc='git branch --show-current | pbcopy'
 alias gc='git commit -a' # -a, --all: stage modified/deleted, but dont "ga."
-alias gcd='cd $(git rev-parse --show-toplevel)' # cd to repo root
+alias gcp='git cherry-pick'
 alias gca='git commit -a --amend ' # overwrite last commit
+alias gcnv="git commit --no-verify"
+alias gcd='cd $(git rev-parse --show-toplevel)' # cd to repo root
 alias gd='git diff'
 alias gdn='git diff --name-only'
 alias gds='gd --staged'
@@ -109,6 +111,9 @@ alias gln='git log --name-only' # log includes list of files changed
 alias glm='git log --merge' # list of commits that conflict during merge
 alias go='git checkout' # switch branch
 alias gob='git checkout -b' # create new branch, switch to it
+alias gom='git checkout master'
+alias gomu='git checkout master && git pull --rebase'
+alias go-='git checkout -'
 alias gp='git push'
 alias grbi="git rebase --interactive" # use: `grbi [commit-hash-before-changes]. effect: Merge together all commits AFTER [commit-hash]. Refer: https://www.internalpointers.com/post/squash-commits-into-one-git. Use `git push --force origin [branch-name], but this isn't great... aim to avoid rebasing and squashing with by using git commit --amend in the first place.
 alias gs='git status'
@@ -122,29 +127,6 @@ alias gstp='git stash pop' # remove stashed changes, reapply to working copy.
 alias gr='git restore' # unstage all changes. use --hard to revert changed files.
 alias gu='git pull --rebase'
 alias git-undo-last-commit='git reset --soft HEAD~1'
-
-# Still investigating...
-alias gcd='cd $(git rev-parse --show-toplevel)'
-alias gfiles='echo "$(git ls-files --others --exclude-standard ; git diff --name-only)"'
-alias gaf='gcd ; gfiles | fzf -m --height=8 | xargs git add ; cd -'
-alias gap='ga -p'
-alias gapf='FILE=$(gfiles | fzf --height=8) && gap $FILE'
-alias ga.ds='ga . && gds'
-alias ga.st='ga . && gst'
-alias gbdm='gb --merged | grep -v "\(^\*\)\|\(^  master$\)" | xargs git branch -d'
-alias gbn='git rev-parse --abbrev-ref HEAD'
-alias gcp='git cherry-pick'
-alias gf='git fetch'
-alias gm='git merge'
-alias gmm='gm master'
-alias gof='gcd ; git diff --name-only | fzf --height=8 | xargs git checkout ; cd -'
-alias gom='git checkout master'
-alias gop='git checkout -'
-alias gomu='gom && gu'
-alias gomup='gom && gu && gop'
-alias gpu='gbn | xargs git push --set-upstream origin'
-alias grf='gcd ; git diff --staged --name-only | fzf -m --height=8 | xargs git reset ; cd -'
-alias grmf='gcd ; git diff --name-only --diff-filter=U | fzf -m --height=8 | xargs git rm ; cd -'
 
 # Web
 alias so='open https://stackoverflow.com/questions/ask'
