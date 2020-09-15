@@ -134,10 +134,12 @@ alias gbn="git rev-parse --abbrev-ref HEAD" # return current branch name
 
 # helper-assisted aliases
 alias gpu='gbn | xargs git push --set-upstream origin'
-alias gfiles='echo "$(git ls-files --others --exclude-standard ; git diff --name-only)"' # return list of modified files
+alias gfiles='echo "$(git ls-files --others --exclude-standard ; git diff --name-only)"' # list modified files
 alias gaf='gcd ; gfiles | fzf -m --height=8 | xargs git add ; cd -' # fzf-assisted git add
 alias gof='gcd ; gfiles | fzf -m --height=8 | xargs git checkout ; cd -' # fzf-assisted git checkout
 alias grf='gcd ; gfiles | fzf -m --height=8 | xargs git reset ; cd -' # fzf-assisted git checkout
+alias gbranches='git for-each-ref --format="%(refname:short)" refs/' # list all branches
+alias gofb='gbranches | fzf -m --height=8 | xargs go' # fzf-assisted git checkout branch
 
 # =====
 # web
