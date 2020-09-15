@@ -74,6 +74,7 @@ alias ..3="cd ../../../"
 alias b='cd -'
 alias ~='cd ~'
 alias o='open'
+alias of='fzf | xargs code'
 
 alias bp="~/dev/code-snippets/bash/"
 alias trash='safe_rm'
@@ -82,9 +83,6 @@ alias cwd='pwd | tr -d "\r\n" | pbcopy' #copy working directory
 alias h='history'
 alias ppath="echo $PATH | tr ':' '\n'" #print path
 alias :q="exit"
-
-alias who-is-using-my-connection="lsof -i tcp:{####}"
-alias kill-the-process-using-my-connection="kill -9 {PID}" # kill PROCESS_WITH_PID using ####
 
 # =====
 # git

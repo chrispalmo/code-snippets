@@ -28,7 +28,7 @@ export PATH=$PATH:~/.npm/bin
 export PATH=$PATH:/Applications/Sublime\ Text.app/Contents/SharedSupport/bin
 
 # Project-specific
-alias ghcsb='f(){ o https://github.com/clipchamp/clipchamp-stack/compare/"$1";  unset -f f; }; f'
+alias gbc='{branch=$(gbn); o https://github.com/clipchamp/clipchamp-stack/compare/"$branch";}'
 
 alias cs1="cd /Users/cjp/dev/cs1/"
 alias cs1c="cd /Users/cjp/dev/cs1/frontend/apps/create"
@@ -36,8 +36,8 @@ alias cs1fe="cd /Users/cjp/dev/cs1/frontend; npm run start-create"
 alias cs1fetest="cd /Users/cjp/dev/cs1/frontend; npx ng test --test-file"
 alias cs1be="cd /Users/cjp/dev/cs1/backend; workon cs1; gulp webserver-gae"
 alias cs1ed="cd /Users/cjp/dev/cs1/frontend/apps/create/src/app/creator/editor"
-alias cs1install="cs1; git pull; mkvirtualenv cs1; workon cs1; ./installRequirements.sh; npm install; cd libs/shared-js/; npm run build; cs1"
-alias cs1nuke="git clone git@github.com:clipchamp/clipchamp-stack.git cs1; cs1install"
+alias cs1install="cs1; git pull --rebase; mkvirtualenv cs1; workon cs1; ./installRequirements.sh; npm install; cd libs/shared-js/; npm run build; cs1"
+alias cs1clone="git clone git@github.com:clipchamp/clipchamp-stack.git cs1; cs1install"
 
 alias cs2="cd /Users/cjp/dev/cs2/"
 alias cs2c="cd /Users/cjp/dev/cs2/frontend/apps/create"
@@ -45,12 +45,12 @@ alias cs2fe="cd /Users/cjp/dev/cs2/frontend; npm run start-create"
 alias cs2fetest="cd /Users/cjp/dev/cs2/frontend; npx ng test --test-file"
 alias cs2be="cd /Users/cjp/dev/cs2/backend; workon cs2; gulp webserver-gae"
 alias cs2ed="cd /Users/cjp/dev/cs2/frontend/apps/create/src/app/creator/editor"
-alias cs2install="cs2; git pull; mkvirtualenv cs2; workon cs2; ./installRequirements.sh; npm install; cd libs/shared-js/; npm run build; cs2"
-alias cs2nuke="git clone git@github.com:clipchamp/clipchamp-stack.git cs2; cs2install"
+alias cs2install="cs2; git pull --rebase; mkvirtualenv cs2; workon cs2; ./installRequirements.sh; npm install; cd libs/shared-js/; npm run build; cs2"
+alias cs2clone="git clone git@github.com:clipchamp/clipchamp-stack.git cs2; cs2install"
 
 alias ccui="cd /Users/cjp/dev/ccui/"
-alias ccuiinstall="ccui; git pull; yarn install"
-alias ccuinuke="git clone git@github.com:clipchamp/ui.git ccui; ccuiinstall"
+alias ccuiinstall="ccui; git pull --rebase; yarn install"
+alias ccuiclone="git clone git@github.com:clipchamp/ui.git ccui; ccuiinstall"
 
 alias ccr1="cd /Users/cjp/dev/clipchamp-content-repo1/"
 alias ccr1fe="cd /Users/cjp/dev/clipchamp-content-repo1/apps/portal; yarn start"
@@ -174,3 +174,5 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
