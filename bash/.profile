@@ -87,21 +87,20 @@ alias who-is-using-my-connection="lsof -i tcp:{####}"
 alias kill-the-process-using-my-connection="kill -9 {PID}" # kill PROCESS_WITH_PID using ####
 
 # =====
-# Git
+# git
 # =====
 
 alias ghcp="o https://github.com/chrispalmo"
 
+# standard aliases
 alias ga='git add'
 alias ga.='ga .'
 alias gb='git branch' # list branches
 alias gba='git branch -a' # list all branches
-alias gbc='git branch --show-current | pbcopy'
 alias gc='git commit -a' # -a, --all: stage modified/deleted, but dont "ga."
 alias gcp='git cherry-pick'
 alias gca='git commit -a --amend ' # overwrite last commit
 alias gcnv="git commit --no-verify"
-alias gcd='cd $(git rev-parse --show-toplevel)' # cd to repo root
 alias gd='git diff'
 alias gdn='git diff --name-only'
 alias gds='gd --staged'
@@ -115,6 +114,7 @@ alias gom='git checkout master'
 alias gomu='git checkout master && git pull --rebase'
 alias go-='git checkout -'
 alias gp='git push'
+alias gpu='git push --set-upstream origin' # use: gpu branch-name
 alias grbi="git rebase --interactive" # use: `grbi [commit-hash-before-changes]. effect: Merge together all commits AFTER [commit-hash]. Refer: https://www.internalpointers.com/post/squash-commits-into-one-git. Use `git push --force origin [branch-name], but this isn't great... aim to avoid rebasing and squashing with by using git commit --amend in the first place.
 alias gs='git status'
 alias gsh='git show'
@@ -128,5 +128,19 @@ alias gr='git restore' # unstage all changes. use --hard to revert changed files
 alias gu='git pull --rebase'
 alias git-undo-last-commit='git reset --soft HEAD~1'
 
-# Web
+# helpers
+alias gcd='cd $(git rev-parse --show-toplevel)' # cd to repo root
+alias gbn="git rev-parse --abbrev-ref HEAD" # return current branch name
+
+# helper-assisted aliases
+alias gpu='gbn | xargs git push --set-upstream origin'
+alias gfiles='echo "$(git ls-files --others --exclude-standard ; git diff --name-only)"' # return list of modified files
+alias gaf='gcd ; gfiles | fzf -m --height=8 | xargs git add ; cd -' # fzf-assisted git add
+alias gof='gcd ; gfiles | fzf -m --height=8 | xargs git checkout ; cd -' # fzf-assisted git checkout
+alias grf='gcd ; gfiles | fzf -m --height=8 | xargs git reset ; cd -' # fzf-assisted git checkout
+
+# =====
+# web
+# =====
+
 alias so='open https://stackoverflow.com/questions/ask'
