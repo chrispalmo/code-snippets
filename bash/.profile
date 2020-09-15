@@ -139,7 +139,8 @@ alias gaf='gcd ; gfiles | fzf -m --height=8 | xargs git add ; cd -' # fzf-assist
 alias gof='gcd ; gfiles | fzf -m --height=8 | xargs git checkout ; cd -' # fzf-assisted git checkout
 alias grf='gcd ; gfiles | fzf -m --height=8 | xargs git reset ; cd -' # fzf-assisted git checkout
 alias gbranches='git for-each-ref --format="%(refname:short)" refs/' # list all branches
-alias gofb='gbranches | fzf -m --height=8 | xargs go' # fzf-assisted git checkout branch
+alias gbranches_raw='{branches=$(gbranches); echo ${branches//origin\/};}' # list all branches, sans 'origin/' prefic
+alias gofb='gbranches_raw | fzf -m --height=8 | xargs git checkout' # fzf-assisted git checkout branch
 
 # =====
 # web
