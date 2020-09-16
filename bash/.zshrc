@@ -175,4 +175,8 @@ source $ZSH/oh-my-zsh.sh
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 
+# fuzzy find
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# vs code
+export PATH="/usr/local/bin/code:$PATH"

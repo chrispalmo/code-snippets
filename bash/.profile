@@ -76,13 +76,14 @@ alias ~='cd ~'
 alias o='open'
 alias of='fzf | xargs code'
 
-alias bp="~/dev/code-snippets/bash/"
 alias trash='safe_rm'
 alias grep='grep -H -n'
 alias cwd='pwd | tr -d "\r\n" | pbcopy' #copy working directory
 alias h='history'
 alias ppath="echo $PATH | tr ':' '\n'" #print path
 alias :q="exit"
+
+alias copy="tr -d '\n' | pbcopy" # remove carriage return at the end of pbcopy on a mac.
 
 # =====
 # git
