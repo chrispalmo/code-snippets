@@ -31,24 +31,15 @@ safe_rm()
     done
 }
 
-# Google it
-google() {
-    search=""
-    echo "Googling: $@"
-    for term in $@; do
-        search="$search%20$term"
-    done
-    open "http://www.google.com/search?q=$search"
+# web search
+function google() {
+    open -na "Google Chrome" --args "https://www.google.com/search?q=$*"
 }
-
-# Search explainshell
-explainshell() {
-    search=""
-    echo "Searching explainshell: $@"
-    for term in $@; do
-        search="$search+$term"
-    done
-    open "https://explainshell.com/explain?cmd=$search"
+function stackoverflow() {
+    open -na "Google Chrome" --args "https://www.google.com/search?q=site:stackoverflow.com $*"
+}
+function explainshell() {
+    open -na "Google Chrome" --args "https://explainshell.com/explain?cmd=$*"
 }
 
 # Make new directory and navitgate into it
@@ -58,7 +49,8 @@ function mcd() { mkdir -p $1 && cd $1 }
 # OSX
 # =====
 
-alias gi=google
+alias gs=google
+alias so=stackoverflow
 alias es=explainshell
 
 alias ll='pwd && ls -l'
