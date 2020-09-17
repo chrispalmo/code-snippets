@@ -49,7 +49,7 @@ function mcd() { mkdir -p $1 && cd $1 }
 # OSX
 # =====
 
-alias gs=google
+alias gg=google
 alias so=stackoverflow
 alias es=explainshell
 
@@ -99,6 +99,8 @@ alias gdsn='gd --staged --name-only'
 alias gl='git log'
 alias gln='git log --name-only' # log includes list of files changed
 alias glm='git log --merge' # list of commits that conflict during merge
+alias gm='git merge'
+alias gmm='gm master'
 alias go='git checkout' # switch branch
 alias gob='git checkout -b' # create new branch, switch to it
 alias gom='git checkout master'
