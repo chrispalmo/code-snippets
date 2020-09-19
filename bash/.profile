@@ -46,12 +46,17 @@ function explainshell() {
 function mcd() { mkdir -p $1 && cd $1 }
 
 # =====
-# OSX
+# web
 # =====
 
 alias gg=google
-alias so=stackoverflow
 alias es=explainshell
+alias soa='open https://stackoverflow.com/questions/ask'
+alias sos=stackoverflow
+
+# =====
+# OSX
+# =====
 
 alias ll='pwd && ls -l'
 alias la='pwd && ls -lA'
@@ -88,13 +93,14 @@ alias ga='git add'
 alias ga.='ga .'
 alias gb='git branch' # list branches
 alias gba='git branch -a' # list all branches
+alias gbd="git branch --delete"
 alias gc='git commit -a' # -a, --all: stage modified/deleted, but dont "ga."
 alias gcp='git cherry-pick'
 alias gca='git commit -a --amend ' # overwrite last commit
 alias gcnv="git commit --no-verify"
 alias gd='git diff'
 alias gdn='git diff --name-only'
-alias gds='gd --staged'
+alias gds='git diff --staged'
 alias gdsn='gd --staged --name-only'
 alias gl='git log'
 alias gln='git log --name-only' # log includes list of files changed
@@ -114,29 +120,27 @@ alias gsh='git show'
 alias gst='git stash save' # `gst "message"` locally save uncommited changes (both staged and unstaged)
 alias gsta='git stash apply' # apply stashed changes to working copy, without deleting from stash.
 alias gstd='git stash drop' # delete a stash
-alias gstk='git stash save --keep-index' # stash with message but keep index intact (like a periodic "progress save")
-alias gstl='git stash list'
-alias gstp='git stash pop' # remove stashed changes, reapply to working copy.
-alias gr='git restore' # unstage all changes. use --hard to revert changed files.
+alias gstk='git stash save --keep-index' # keeps staged changes and stashes un-tracked changes
+alias gstl="git stash list"
+alias gstls="git stash list --stat" # list files changed for each stash
+alias gstp='git stash pop' # delete stash; apply stashed changes to working copy
 alias gu='git pull --rebase'
 alias git-undo-last-commit='git reset --soft HEAD~1'
 
 # helpers
+alias fzf8="fzf -m --height=8"
 alias gcd='cd $(git rev-parse --show-toplevel)' # cd to repo root
 alias gbn="git rev-parse --abbrev-ref HEAD" # return current branch name
+alias gfiles='echo "$(git ls-files --others --exclude-standard ; git diff --name-only; git diff --staged --name-only)"' # list modified files
+alias gbranches='git for-each-ref --format="%(refname:short)" refs/' # list all branches
+alias gbranches_raw='{branches=$(gbranches); echo ${branches//origin\/};}' # list all branches, sans 'origin/' prefic
 
 # helper-assisted aliases
 alias gpu='gbn | xargs git push --set-upstream origin'
-alias gfiles='echo "$(git ls-files --others --exclude-standard ; git diff --name-only)"' # list modified files
-alias gaf='gcd ; gfiles | fzf -m --height=8 | xargs git add ; cd -' # fzf-assisted git add
-alias gof='gcd ; gfiles | fzf -m --height=8 | xargs git checkout ; cd -' # fzf-assisted git checkout
-alias grf='gcd ; gfiles | fzf -m --height=8 | xargs git reset ; cd -' # fzf-assisted git checkout
-alias gbranches='git for-each-ref --format="%(refname:short)" refs/' # list all branches
-alias gbranches_raw='{branches=$(gbranches); echo ${branches//origin\/};}' # list all branches, sans 'origin/' prefic
-alias gofb='gbranches_raw | fzf -m --height=8 | xargs git checkout' # fzf-assisted git checkout branch
-
-# =====
-# web
-# =====
-
-alias so='open https://stackoverflow.com/questions/ask'
+# helper-assisted aliases (using fuzzy-find)
+alias gaf='gcd ; gfiles | fzf8 | xargs git add ; cd -' # fzf-assisted git add
+alias gbdf='gcd ; gbranches_raw | fzf8 | xargs git branch --delete' # fzf-assisted git delete branch
+alias gdf='gcd ; gfiles | fzf8 | xargs git diff ; cd -' # fzf-assisted git diff
+alias gdsf='gcd ; gfiles | fzf8 | xargs git diff --staged ; cd -' # fzf-assisted git diff
+alias gof='gcd ; gfiles | fzf8 | xargs git checkout ; cd -' # fzf-assisted git checkout
+alias gobf='gbranches_raw | fzf8 | xargs git checkout' # fzf-assisted git checkout branch
