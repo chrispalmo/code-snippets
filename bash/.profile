@@ -64,6 +64,7 @@ alias l='ls -hpCF'
 alias cll="clear; ls -lAh"
 alias cp='cp -i'
 alias mv='mv -i'
+alias x='xargs'
 
 alias ..="cd .."
 alias ..2="cd ../../"
@@ -94,7 +95,7 @@ alias ga.='ga .'
 alias gb='git branch' # list branches
 alias gba='git branch -a' # list all branches
 alias gbd="git branch --delete"
-alias gc='git commit -a' # -a, --all: stage modified/deleted, but dont "ga."
+alias gc='git commit'
 alias gcp='git cherry-pick'
 alias gca='git commit -a --amend ' # overwrite last commit
 alias gcnv="git commit --no-verify"
