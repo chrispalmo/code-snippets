@@ -95,6 +95,7 @@ alias ga.='ga .'
 alias gb='git branch' # list branches
 alias gba='git branch -a' # list all branches
 alias gbd="git branch --delete"
+alias gbdr="git push origin --delete" # delete remote branch. use: gbdr [branch-name]
 alias gc='git commit'
 alias gcnv='git commit --no-verify'
 alias gcp='git cherry-pick'
@@ -143,6 +144,7 @@ alias gpu='gbn | xargs git push --set-upstream origin'
 # helper-assisted aliases (using fuzzy-find)
 alias gaf='gcd ; gfiles | fzf8 | xargs git add ; cd -' # fzf-assisted git add
 alias gbdf='gcd ; gbranches_raw | fzf8 | xargs git branch --delete' # fzf-assisted git delete branch
+alias gbdrf='gcd ; gbranches_raw | fzf8 | xargs git push origin --delete' # fzf-assisted git delete remote branch
 alias gdf='gcd ; gfiles | fzf8 | xargs git diff ; cd -' # fzf-assisted git diff
 alias gdsf='gcd ; gfiles | fzf8 | xargs git diff --staged ; cd -' # fzf-assisted git diff
 alias gof='gcd ; gfiles | fzf8 | xargs git checkout ; cd -' # fzf-assisted git checkout
