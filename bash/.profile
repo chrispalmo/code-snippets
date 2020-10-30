@@ -91,7 +91,6 @@ alias ghcp="o https://github.com/chrispalmo"
 
 # standard aliases
 alias ga='git add'
-alias ga.='ga .'
 alias gb='git branch' # list branches
 alias gba='git branch -a' # list all branches
 alias gbd="git branch --delete"
@@ -140,6 +139,7 @@ alias gbranches='git for-each-ref --format="%(refname:short)" refs/' # list all 
 alias gbranches_raw='{branches=$(gbranches); echo ${branches//origin\/};}' # list all branches, sans 'origin/' prefic
 
 # helper-assisted aliases
+alias ga.='gcd; ga .; cd -'
 alias gpu='gbn | xargs git push --set-upstream origin'
 # helper-assisted aliases (using fuzzy-find)
 alias gaf='gcd ; gfiles | fzf8 | xargs git add ; cd -' # fzf-assisted git add
