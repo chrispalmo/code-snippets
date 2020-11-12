@@ -141,6 +141,8 @@ alias gbranches_raw='{branches=$(gbranches); echo ${branches//origin\/};}' # lis
 # helper-assisted aliases
 alias ga.='gcd; ga .; cd -'
 alias gpu='gbn | xargs git push --set-upstream origin'
+alias gbc='{CURRENT_BRANCH=$(gbn); CURRENT_REPO=$(cut -d . -f 1 <<< $(cut -d : -f 2 <<< $(git config --get remote.origin.url))); o https://github.com/"$CURRENT_REPO"/compare/"$CURRENT_BRANCH";}' # compare current branch to master on github website
+
 # helper-assisted aliases (using fuzzy-find)
 alias gaf='gcd ; gfiles | fzf8 | xargs git add ; cd -' # fzf-assisted git add
 alias gbdf='gcd ; gbranches_raw | fzf8 | xargs git branch --delete' # fzf-assisted git delete branch

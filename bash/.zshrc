@@ -28,8 +28,6 @@ export PATH=$PATH:~/.npm/bin
 export PATH=$PATH:/Applications/Sublime\ Text.app/Contents/SharedSupport/bin
 
 # Project-specific
-alias gbc='{branch=$(gbn); o https://github.com/clipchamp/clipchamp-stack/compare/"$branch";}'
-
 alias cs1="cd /Users/cjp/dev/cs1/"
 alias cs1f="cd /Users/cjp/dev/cs1/frontend; npm run start-create"
 alias cs1test="cd /Users/cjp/dev/cs1/frontend; npx ng test --test-file"
