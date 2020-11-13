@@ -89,13 +89,12 @@ alias copy="tr -d '\n' | pbcopy" # remove carriage return at the end of pbcopy o
 
 alias ghcp="o https://github.com/chrispalmo"
 
-# standard aliases
+# standards
 alias ga='git add'
 alias gb='git branch' # list branches
 alias gba='git branch -a' # list all branches
 alias gbd="git branch --delete"
 alias gbdr="git push origin --delete" # delete remote branch. use: gbdr [branch-name]
-alias gc='git commit'
 alias gcnv='git commit --no-verify'
 alias gcp='git cherry-pick'
 alias gca='git commit --amend ' # overwrite last commit
@@ -132,18 +131,23 @@ alias git-undo-last-commit='git reset --soft HEAD~1'
 
 # helpers
 alias fzf8="fzf -m --height=8"
+function gc () { [[ $@ != '' ]] && { COMMIT_MESSAGE="$@" ; git commit -m $COMMIT_MESSAGE } || git commit }
 alias gcd='cd $(git rev-parse --show-toplevel)' # cd to repo root
 alias gbn="git rev-parse --abbrev-ref HEAD" # return current branch name
 alias gfiles='echo "$(git ls-files --others --exclude-standard ; git diff --name-only; git diff --staged --name-only)"' # list modified files
 alias gbranches='git for-each-ref --format="%(refname:short)" refs/' # list all branches
 alias gbranches_raw='{branches=$(gbranches); echo ${branches//origin\/};}' # list all branches, sans 'origin/' prefic
 
-# helper-assisted aliases
+# helper-assisted
 alias ga.='gcd; ga .; cd -'
-alias gpu='gbn | xargs git push --set-upstream origin'
 alias gbc='{CURRENT_BRANCH=$(gbn); CURRENT_REPO=$(cut -d . -f 1 <<< $(cut -d : -f 2 <<< $(git config --get remote.origin.url))); o https://github.com/"$CURRENT_REPO"/compare/"$CURRENT_BRANCH";}' # compare current branch to master on github website
+alias gpu='gbn | xargs git push --set-upstream origin'
+function gacp() { ga. ; gc "$@" ; gp }
+function gacpc() { ga. ; gc "$@" ; gp ; gbc }
+function gacpu() { ga. ; gc "$@" ; gpu }
+function gacpuc() { ga. ; gc "$@" ; gpu ; gbc }
 
-# helper-assisted aliases (using fuzzy-find)
+# helper-assisted (using fuzzy-find)
 alias gaf='gcd ; gfiles | fzf8 | xargs git add ; cd -' # fzf-assisted git add
 alias gbdf='gcd ; gbranches_raw | fzf8 | xargs git branch --delete' # fzf-assisted git delete branch
 alias gbdrf='gcd ; gbranches_raw | fzf8 | xargs git push origin --delete' # fzf-assisted git delete remote branch
