@@ -97,6 +97,7 @@ alias gbd="git branch --delete"
 alias gbdr="git push origin --delete" # delete remote branch. use: gbdr [branch-name]
 alias gcnv='git commit --no-verify'
 alias gcp='git cherry-pick'
+alias gc='git commit'
 alias gca='git commit --amend ' # overwrite last commit
 alias gcnv="git commit --no-verify"
 alias gd='git diff'
@@ -132,7 +133,7 @@ alias git-undo-last-commit='git reset --soft HEAD~1'
 
 # helpers
 alias fzf8="fzf -m --height=8"
-function gc () { [[ $@ != '' ]] && { COMMIT_MESSAGE="$@" ; git commit -m $COMMIT_MESSAGE } || git commit }
+function gcm () { [[ $@ != '' ]] && { COMMIT_MESSAGE="$@" ; git commit -m $COMMIT_MESSAGE } || git commit }
 alias gcd='cd $(git rev-parse --show-toplevel)' # cd to repo root
 alias gbn="git rev-parse --abbrev-ref HEAD" # return current branch name
 alias gfiles='echo "$(git ls-files --others --exclude-standard ; git diff --name-only; git diff --staged --name-only)"' # list modified files
@@ -143,10 +144,10 @@ alias gbranches_raw='{branches=$(gbranches); echo ${branches//origin\/};}' # lis
 alias ga.='gcd; ga .; cd -'
 alias gbc='{CURRENT_BRANCH=$(gbn); CURRENT_REPO=$(cut -d . -f 1 <<< $(cut -d : -f 2 <<< $(git config --get remote.origin.url))); o https://github.com/"$CURRENT_REPO"/compare/"$CURRENT_BRANCH";}' # compare current branch to master on github website
 alias gpu='gbn | xargs git push --set-upstream origin'
-function gacp() { ga. ; gc "$@" ; gp }
-function gacpc() { ga. ; gc "$@" ; gp ; gbc }
-function gacpu() { ga. ; gc "$@" ; gpu }
-function gacpuc() { ga. ; gc "$@" ; gpu ; gbc }
+function gacp() { ga. ; gcm "$@" ; gp }
+function gacpc() { ga. ; gcm "$@" ; gp ; gbc }
+function gacpu() { ga. ; gcm "$@" ; gpu }
+function gacpuc() { ga. ; gcm "$@" ; gpu ; gbc }
 
 # helper-assisted (using fuzzy-find)
 alias gaf='gcd ; gfiles | fzf8 | xargs git add ; cd -' # fzf-assisted git add
