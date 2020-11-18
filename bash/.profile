@@ -122,6 +122,7 @@ alias grh='git reset --hard'
 alias grbi="git rebase --interactive" # use: `grbi [commit-hash-before-changes]. effect: Merge together all commits AFTER [commit-hash]. Refer: https://www.internalpointers.com/post/squash-commits-into-one-git. Use `git push --force origin [branch-name], but this isn't great... aim to avoid rebasing and squashing with by using git commit --amend in the first place.
 alias gs='git status'
 alias gsh='git show'
+alias gshn='git show --name-only' # list files changed in latest commit
 alias gst='git stash save' # `gst "message"` locally save uncommited changes (both staged and unstaged)
 alias gsta='git stash apply' # apply stashed changes to working copy, without deleting from stash.
 alias gstd='git stash drop' # delete a stash
