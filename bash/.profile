@@ -135,6 +135,7 @@ alias gstls="git stash list --stat" # list files changed for each stash
 alias gstp='git stash pop' # delete stash; apply stashed changes to working copy
 alias gu='git pull --rebase'
 alias git-undo-last-commit='git reset --soft HEAD~1'
+alias git-undo-reset='git reset ORIG_HEAD'
 
 # helpers
 alias fzf8="fzf -m --height=8"
