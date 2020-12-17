@@ -83,5 +83,9 @@
     {
         "key": "cmd+c",
         "command": "-editor.action.clipboardCopyAction"
+    },
+    {
+        "key": "shift+cmd+a shift+cmd+f",
+        "command": "workbench.action.addRootFolder"
     }
 ]
