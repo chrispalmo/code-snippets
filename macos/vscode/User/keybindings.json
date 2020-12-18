@@ -73,7 +73,7 @@
         "command": "workbench.action.terminal.toggleTerminal"
     },
     {
-        "key": "cmd+f cmd+i",
+        "key": "shift+cmd+i",
         "command": "extension.searchUnderCursor"
     },
     {
