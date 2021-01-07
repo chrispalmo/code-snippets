@@ -95,5 +95,13 @@
     {
         "key": "ctrl+shift+`",
         "command": "-workbench.action.terminal.new"
+    },
+    {
+        "key": "ctrl+alt+cmd+.",
+        "command": "workbench.action.compareEditor.focusPrimarySide"
+    },
+    {
+        "key": "ctrl+alt+cmd+,",
+        "command": "workbench.action.compareEditor.focusSecondarySide"
     }
 ]

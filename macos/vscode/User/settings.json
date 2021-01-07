@@ -1,7 +1,7 @@
 {
     "prettier.prettierPath": "/Users/cjp/.npm/bin/prettier",
     "terminal.integrated.enableBell": false,
-    "window.zoomLevel": 1,
+    "window.zoomLevel": 0,
     "[typescriptreact]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
