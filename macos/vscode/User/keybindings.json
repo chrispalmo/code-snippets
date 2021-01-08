@@ -103,5 +103,9 @@
     {
         "key": "ctrl+alt+cmd+,",
         "command": "workbench.action.compareEditor.focusSecondarySide"
+    },
+    {
+        "key": "ctrl+shift+p",
+        "command": "pr:github.focus"
     }
 ]
