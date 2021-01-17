@@ -55,7 +55,7 @@ alias soa='open https://stackoverflow.com/questions/ask'
 alias sos=stackoverflow
 
 # =====
-# OSX
+# Misc
 # =====
 
 alias ll='pwd && ls -l'
@@ -73,6 +73,7 @@ alias b='cd -'
 alias ~='cd ~'
 alias o='open'
 alias of='fzf | xargs code'
+alias cf="fzf | cd"
 
 alias trash='safe_rm'
 alias grep='grep -H -n'
