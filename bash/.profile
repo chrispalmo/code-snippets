@@ -72,6 +72,7 @@ alias ..3="cd ../../../"
 alias b='cd -'
 alias ~='cd ~'
 alias o='open'
+alias o.='open .'
 alias of='fzf | xargs code'
 alias cf="fzf | cd"
 
