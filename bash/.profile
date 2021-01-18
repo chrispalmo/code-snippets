@@ -83,6 +83,7 @@ alias ppath="echo $PATH | tr ':' '\n'" #print path
 alias :q="exit"
 
 alias copy="tr -d '\n' | pbcopy" # remove carriage return at the end of pbcopy on a mac.
+alias d="deactivate"
 
 alias checkport='lsof -i :<port>' # reminder only
 alias killprocess'kill <process#>' # reminder only
