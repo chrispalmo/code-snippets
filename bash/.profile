@@ -152,6 +152,7 @@ alias gbranches_raw='{branches=$(gbranches); echo ${branches//origin\/};}' # lis
 # helper-assisted
 alias ga.='gcd; ga .; cd -'
 alias gbc='{CURRENT_BRANCH=$(gbn); CURRENT_REPO=$(cut -d . -f 1 <<< $(cut -d : -f 2 <<< $(git config --get remote.origin.url))); o https://github.com/"$CURRENT_REPO"/compare/"$CURRENT_BRANCH";}' # compare current branch to master on github website
+alias gbnc='gbn | copy'
 alias gpu='gbn | xargs git push --set-upstream origin'
 function gacp() { ga. ; gcm "$@" ; gp }
 function gacpc() { ga. ; gcm "$@" ; gp ; gbc }
@@ -166,3 +167,7 @@ alias gdf='gcd ; gfiles | fzf8 | xargs git diff ; cd -' # fzf-assisted git diff
 alias gdsf='gcd ; gfiles | fzf8 | xargs git diff --staged ; cd -' # fzf-assisted git diff
 alias gof='gcd ; gfiles | fzf8 | xargs git checkout ; cd -' # fzf-assisted git checkout
 alias gobf='gbranches_raw | fzf8 | xargs git checkout' # fzf-assisted git checkout branch
+
+# github.com CLI
+alias gprv='gh pr view --web'
+alias gprc='gh pr create --fill ; git pr view --web'
