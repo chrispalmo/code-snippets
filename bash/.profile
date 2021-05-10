@@ -169,5 +169,5 @@ alias gof='gcd ; gfiles | fzf8 | xargs git checkout ; cd -' # fzf-assisted git c
 alias gobf='gbranches_raw | fzf8 | xargs git checkout' # fzf-assisted git checkout branch
 
 # github.com CLI
-alias gprv='gh pr view --web'
-alias gprc='gh pr create --fill ; git pr view --web'
+alias ghprv='gh pr view --web'
+alias ghprc='gh pr create --fill ; git pr view --web'
