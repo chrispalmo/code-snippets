@@ -45,6 +45,12 @@ function explainshell() {
 # Make new directory and navitgate into it
 function mcd() { mkdir -p $1 && cd $1 }
 
+# Virtual environment deactivation
+function deactivate_venv() {
+    venv_active=$(which deactivate)
+    if [[ $venv_active != *"deactivate not found"* ]]; then deactivate; fi
+}
+
 # =====
 # web
 # =====
