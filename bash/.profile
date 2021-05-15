@@ -51,6 +51,22 @@ function deactivate_venv() {
     if [[ $venv_active != *"deactivate not found"* ]]; then deactivate; fi
 }
 
+# Kill processes running on ports
+killport()
+{
+    lsof_output=""
+    for port in $*; do
+        lsof_output+=$(lsof -i :$port)
+    done
+    # echo $lsof_output | perl -ne 'print  if s/.*(\d{5}).*/\1/'
+    process_ids=$(echo $lsof_output | perl -ne 'print  if s/.*(\d{5}).*/\1/')
+    echo $process_ids | xargs kill
+}
+
+# Ports used by cc-stack
+alias lscs='lsof -i :8200 ; lsof -i :9229 ; lsof -i :4202; lsof -i :8080; lsof -i :6381'
+alias killcs='killport 8200 9229 4202 8080 6381'
+
 # =====
 # web
 # =====
