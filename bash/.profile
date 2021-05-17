@@ -51,18 +51,6 @@ function deactivate_venv() {
     if [[ $venv_active != *"deactivate not found"* ]]; then deactivate; fi
 }
 
-# Kill processes running on ports
-killport()
-{
-    lsof_output=""
-    for port in $*; do
-        lsof_output+=$(lsof -i :$port)
-    done
-    # echo $lsof_output | perl -ne 'print  if s/.*(\d{5}).*/\1/'
-    process_ids=$(echo $lsof_output | perl -ne 'print  if s/.*(\d{5}).*/\1/')
-    echo $process_ids | xargs kill
-}
-
 # List ids of all processes running on ports
 # example usage: pids 8200 9229 4202 8080 6381
 pids()
@@ -71,8 +59,8 @@ pids()
     for port in $*; do
         lsof_output+=$(lsof -i :$port)
     done
-    # process ids are 5 digits surrounded by spaces
-    process_ids=$(echo $lsof_output | perl -ne 'print  if s/.*( \d{5} ).*/\1/')
+    # process ids are 1 or more (typically 4-5) digits surrounded by spaces
+    process_ids=$(echo $lsof_output | perl -ne 'print  if s/.*( \d+ ).*/\1/')
     echo $process_ids
 }
 
