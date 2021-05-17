@@ -77,8 +77,8 @@ pids()
 }
 
 # clean up memory leaks caused by cc-stack
-alias lscs='pids 8200 9229 4202 8080 6381'
-alias killcs='lscs | xargs kill'
+alias csls='pids 8200 9229 4202 8080 6381'
+alias cskill='csls | xargs kill'
 
 # =====
 # web
