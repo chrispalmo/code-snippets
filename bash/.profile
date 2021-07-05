@@ -100,6 +100,7 @@ alias of='fzf | xargs code'
 alias cf="fzf | cd"
 
 alias trash='safe_rm'
+alis t='safe_rm'
 alias grep='grep -H -n'
 alias cwd='pwd | tr -d "\r\n" | pbcopy' #copy working directory
 alias h='history'
