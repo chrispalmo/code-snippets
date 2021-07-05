@@ -65,7 +65,7 @@ pids()
 }
 
 # clean up memory leaks caused by cc-stack
-alias csls='pids 8200 9229 4202 8080 6381 4200'
+alias csls='pids 8200 9229 4200 4201 4202 8080 8081 6381'
 alias cskill='csls | xargs kill'
 
 # =====
@@ -100,7 +100,7 @@ alias of='fzf | xargs code'
 alias cf="fzf | cd"
 
 alias trash='safe_rm'
-alis t='safe_rm'
+alias t='safe_rm'
 alias grep='grep -H -n'
 alias cwd='pwd | tr -d "\r\n" | pbcopy' #copy working directory
 alias h='history'
