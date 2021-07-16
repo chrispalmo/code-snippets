@@ -162,11 +162,15 @@ alias gstls="git stash list --stat" # list files changed for each stash
 alias gstp='git stash pop' # delete stash; apply stashed changes to working copy
 alias gu='git pull --rebase'
 alias git-undo-last-commit='git reset --soft HEAD~1'
-alias git-undo-reset='git reset ORIG_HEAD'
+alias git-redo-next-commit='git reset ORIG_HEAD'
+alias gulc='git-undo-last-commit'
+alias grnc="git-redo-next-commit"
 
 # helpers
 alias fzf8="fzf -m --height=8"
 function gcm () { [[ $@ != '' ]] && { COMMIT_MESSAGE="$@" ; git commit -m $COMMIT_MESSAGE } || git commit }
+function gcam () { [[ $@ != '' ]] && { COMMIT_MESSAGE="$@" ; git commit --amend -m $COMMIT_MESSAGE } || git commit }
+function gcamp () { MESSAGE=$(git reflog -1 | sed 's/^.*: //') ; gcam $MESSAGE }
 alias gcd='cd $(git rev-parse --show-toplevel)' # cd to repo root
 alias gbn="git rev-parse --abbrev-ref HEAD" # return current branch name
 alias gfiles='echo "$(git ls-files --others --exclude-standard ; git diff --name-only; git diff --staged --name-only)"' # list modified files
@@ -178,6 +182,7 @@ alias ga.='gcd; ga .; cd -'
 alias gbc='{CURRENT_BRANCH=$(gbn); CURRENT_REPO=$(cut -d . -f 1 <<< $(cut -d : -f 2 <<< $(git config --get remote.origin.url))); o https://github.com/"$CURRENT_REPO"/compare/"$CURRENT_BRANCH";}' # compare current branch to master on github website
 alias gbnc='gbn | copy'
 alias gpu='gbn | xargs git push --set-upstream origin'
+function gac() { ga. ; gcm "$@" }
 function gacp() { ga. ; gcm "$@" ; gp }
 function gacpc() { ga. ; gcm "$@" ; gp ; gbc }
 function gacpu() { ga. ; gcm "$@" ; gpu }
