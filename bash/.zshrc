@@ -27,20 +27,36 @@ export PATH=$PATH:~/.npm/bin
 # Sublime path
 export PATH=$PATH:/Applications/Sublime\ Text.app/Contents/SharedSupport/bin
 
+# Virtual environment deactivation
+function deactivate_venv() {
+    venv_active=$(which deactivate)
+    if [[ $venv_active != *"deactivate not found"* ]]; then deactivate; fi 
+}
+
 # Project-specific
-alias cs1="cd /Users/cjp/dev/cs1/"
-alias cs1f="cd /Users/cjp/dev/cs1/frontend; npm run start-create"
+alias cs1="deactivate_venv; cd /Users/cjp/dev/cs1/; source .venv39/bin/activate"
+alias cs1f="cs1; cd frontend; yarn create:download-translations; npm run start-create"
 alias cs1test="cd /Users/cjp/dev/cs1/frontend; npx ng test --test-file"
-alias cs1b="cd /Users/cjp/dev/cs1/backend; workon cs1; gulp webserver-gae"
-alias cs1install="cs1; git pull --rebase; mkvirtualenv cs1; workon cs1; ./installRequirements.sh; yarn install; cd libs/shared-js/; npm run build; cs1"
+alias cs1b="cs1; backend; gulp webserver-gae"
+alias cs1install="cs1; git pull --rebase; ./installRequirements.sh; yarn install; cd libs/shared-js/; npm run build; cs1"
+alias cs1installclean="cs1; git pull --rebase; ./installRequirements.sh --clean; yarn install; cd libs/shared-js/; npm run build; cs1"
 alias cs1clone="git clone git@github.com:clipchamp/clipchamp-stack.git cs1; cs1install"
 
-alias cs2="cd /Users/cjp/dev/cs2/"
-alias cs2f="cd /Users/cjp/dev/cs2/frontend; npm run start-create"
+alias cs2="deactivate_venv; cd /Users/cjp/dev/cs2/; source .venv39/bin/activate"
+alias cs2f="cs2; cd frontend; yarn create:download-translations; npm run start-create"
 alias cs2test="cd /Users/cjp/dev/cs2/frontend; npx ng test --test-file"
-alias cs2b="cd /Users/cjp/dev/cs2/backend; workon cs2; gulp webserver-gae"
-alias cs2install="cs2; git pull --rebase; mkvirtualenv cs2; workon cs2; ./installRequirements.sh; yarn install; cd libs/shared-js/; npm run build; cs2"
+alias cs2b="cs2; backend; gulp webserver-gae"
+alias cs2install="cs2; git pull --rebase; ./installRequirements.sh; yarn install; cd libs/shared-js/; npm run build; cs2"
+alias cs2installclean="cs2; git pull --rebase; ./installRequirements.sh --clean; yarn install; cd libs/shared-js/; npm run build; cs2"
 alias cs2clone="git clone git@github.com:clipchamp/clipchamp-stack.git cs2; cs2install"
+
+alias cs3="deactivate_venv; cd /Users/cjp/dev/cs3/; source .venv39/bin/activate"
+alias cs3f="cs3; cd frontend; yarn create:download-translations; npm run start-create"
+alias cs3test="cd /Users/cjp/dev/cs3/frontend; npx ng test --test-file"
+alias cs3b="cs3; backend; gulp webserver-gae"
+alias cs3install="cs3; git pull --rebase; ./installRequirements.sh; yarn install; cd libs/shared-js/; npm run build; cs3"
+alias cs3installclean="cs3; git pull --rebase; ./installRequirements.sh --clean; yarn install; cd libs/shared-js/; npm run build; cs3"
+alias cs3clone="git clone git@github.com:clipchamp/clipchamp-stack.git cs3; cs3install"
 
 alias ccui="cd /Users/cjp/dev/ccui/"
 alias ccuiinstall="ccui; git pull --rebase; yarn install"
@@ -51,12 +67,13 @@ alias ccr1fe="cd /Users/cjp/dev/clipchamp-content-repo1/apps/portal; yarn start"
 alias ccr1be="cd /Users/cjp/dev/clipchamp-content-repo1/apps/api; yarn dev"
 
 alias i18n="cd frontend/apps/create && npx lingui extract"
+alias cstypecheck="yarn check-create:watch"
 
 alias db="cd /Users/cjp/Dropbox/"
 alias dt="cd /Users/cjp/Desktop/"
 alias dl="cd /Users/cjp/Downloads/"
 alias dv="cd /Users/cjp/dev/"
-alias lh="o http://localhost:4200/"
+alias lh4200="o http://localhost:4200/"
 alias ghcs="o https://github.com/clipchamp/clipchamp-stack"
 alias ghccr="o https://github.com/clipchamp/content-repository"
 alias zp="code ~/.zshrc"
@@ -173,5 +190,5 @@ export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # vs code
-export PATH="/usr/local/bin/code:$PATH"
 alias codef="fzf | xargs code"
+export PATH="/usr/local/bin/code:$PATH"
