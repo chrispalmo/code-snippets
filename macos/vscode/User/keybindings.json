@@ -119,14 +119,6 @@
         "when": "workbench.explorer.openEditorsView.active"
     },
     {
-        "key": "cmd+w",
-        "command": "workbench.action.closeWindow"
-    },
-    {
-        "key": "shift+cmd+w",
-        "command": "-workbench.action.closeWindow"
-    },
-    {
         "key": "shift+cmd+w",
         "command": "workbench.action.closeFolder",
         "when": "emptyWorkspaceSupport"
@@ -135,5 +127,53 @@
         "key": "cmd+k f",
         "command": "-workbench.action.closeFolder",
         "when": "emptyWorkspaceSupport"
+    },
+    {
+        "key": "cmd+q",
+        "command": "workbench.action.closeWindow"
+    },
+    {
+        "key": "shift+cmd+w",
+        "command": "-workbench.action.closeWindow"
+    },
+    {
+        "key": "shift+down",
+        "command": "workbench.action.terminal.scrollDown",
+        "when": "terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "alt+cmd+pagedown",
+        "command": "-workbench.action.terminal.scrollDown",
+        "when": "terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "shift+alt+down",
+        "command": "workbench.action.terminal.scrollDownPage",
+        "when": "terminalFocus && terminalProcessSupported && !terminalAltBufferActive"
+    },
+    {
+        "key": "pagedown",
+        "command": "-workbench.action.terminal.scrollDownPage",
+        "when": "terminalFocus && terminalProcessSupported && !terminalAltBufferActive"
+    },
+    {
+        "key": "shift+up",
+        "command": "workbench.action.terminal.scrollUp",
+        "when": "terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "alt+cmd+pageup",
+        "command": "-workbench.action.terminal.scrollUp",
+        "when": "terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "shift+alt+up",
+        "command": "workbench.action.terminal.scrollUpPage",
+        "when": "terminalFocus && terminalProcessSupported && !terminalAltBufferActive"
+    },
+    {
+        "key": "pageup",
+        "command": "-workbench.action.terminal.scrollUpPage",
+        "when": "terminalFocus && terminalProcessSupported && !terminalAltBufferActive"
     }
 ]
