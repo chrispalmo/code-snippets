@@ -202,4 +202,4 @@ alias gobf='gbranches_raw | fzf8 | xargs git checkout' # fzf-assisted git checko
 
 # github.com CLI
 alias ghprv='gh pr view --web'
-alias ghprc='gh pr create --fill ; git pr view --web'
+alias ghprc='gh pr create --fill ; gh pr view --web'
