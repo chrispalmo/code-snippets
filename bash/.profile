@@ -183,7 +183,11 @@ alias gbranches_raw='{branches=$(gbranches); echo ${branches//origin\/};}' # lis
 
 # helper-assisted
 alias ga.='gcd; ga .; cd -'
-alias gbc='{CURRENT_BRANCH=$(gbn); CURRENT_REPO=$(cut -d . -f 1 <<< $(cut -d : -f 2 <<< $(git config --get remote.origin.url))); o https://github.com/"$CURRENT_REPO"/compare/"$CURRENT_BRANCH";}' # compare current branch to master on github website
+## compare current branch to master on github website
+alias ghbc='{CURRENT_BRANCH=$(gbn); CURRENT_REPO=$(cut -d . -f 1 <<< $(cut -d : -f 2 <<< $(git config --get remote.origin.url))); o https://github.com/"$CURRENT_REPO"/compare/"$CURRENT_BRANCH";}'
+## compare current branch to master on gitlab website
+alias glbc='{CURRENT_BRANCH=$(gbn); CURRENT_REPO=$(cut -d / -f 2,3 <<< $(cut -d . -f 2 <<< $(git config --get remote.origin.url))); o https://gitlab.com/"$CURRENT_REPO"/-/compare/master..."$CURRENT_BRANCH";}'
+## misc
 alias gbnc='gbn | copy'
 alias gpu='gbn | xargs git push --set-upstream origin'
 function gac() { ga. ; gcm "$@" }
@@ -191,8 +195,7 @@ function gacp() { ga. ; gcm "$@" ; gp }
 function gacpc() { ga. ; gcm "$@" ; gp ; gbc }
 function gacpu() { ga. ; gcm "$@" ; gpu }
 function gacpuc() { ga. ; gcm "$@" ; gpu ; gbc }
-
-# helper-assisted (using fuzzy-find)
+## fzf
 alias gaf='gcd ; gfiles | fzf8 | xargs git add ; cd -' # fzf-assisted git add
 alias gbdf='gcd ; gbranches_raw | fzf8 | xargs git branch --delete' # fzf-assisted git delete branch
 alias gbdrf='gcd ; gbranches_raw | fzf8 | xargs git push origin --delete' # fzf-assisted git delete remote branch
@@ -201,6 +204,10 @@ alias gdsf='gcd ; gfiles | fzf8 | xargs git diff --staged ; cd -' # fzf-assisted
 alias gof='gcd ; gfiles | fzf8 | xargs git checkout ; cd -' # fzf-assisted git checkout
 alias gobf='gbranches_raw | fzf8 | xargs git checkout' # fzf-assisted git checkout branch
 
-# github.com CLI
+# CLI
+## Github
 alias ghprv='gh pr view --web'
 alias ghprc='gh pr create --fill ; gh pr view --web'
+## Gitlab
+alias glmrv='glab mr view'
+alias glmrc='glab mr create'
