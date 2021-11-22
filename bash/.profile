@@ -192,9 +192,7 @@ alias gbnc='gbn | copy'
 alias gpu='gbn | xargs git push --set-upstream origin'
 function gac() { ga. ; gcm "$@" }
 function gacp() { ga. ; gcm "$@" ; gp }
-function gacpc() { ga. ; gcm "$@" ; gp ; gbc }
 function gacpu() { ga. ; gcm "$@" ; gpu }
-function gacpuc() { ga. ; gcm "$@" ; gpu ; gbc }
 ## fzf
 alias gaf='gcd ; gfiles | fzf8 | xargs git add ; cd -' # fzf-assisted git add
 alias gbdf='gcd ; gbranches_raw | fzf8 | xargs git branch --delete' # fzf-assisted git delete branch
