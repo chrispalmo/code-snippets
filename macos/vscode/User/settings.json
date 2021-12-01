@@ -14,9 +14,11 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "editor.codeActionsOnSave": {
-        "source.fixAll": true,
+        "source.formatDocument": true,
+        "source.fixAll": true
     },
     "files.autoSave": "off",
+    "javascript.preferences.importModuleSpecifier": "non-relative",
     "search.collapseResults": "auto",
     "workbench.sideBar.location": "right",
     "[html]": {
@@ -26,7 +28,7 @@
         "*.ipynb": "jupyter-notebook"
     },
     "diffEditor.ignoreTrimWhitespace": false,
-    "editor.tabSize": 8,
+    "editor.tabSize": 4,
     "editor.cursorStyle": "line",
     "editor.insertSpaces": false,
     "editor.lineNumbers": "on",
@@ -47,5 +49,10 @@
     "[json]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
-    "window.zoomLevel": -1,
+    "cSpell.userWords": ["clipchamp", "supercut"],
+    "editor.formatOnSave": true,
+    "gitlens.advanced.messages": {
+        "suppressGitMissingWarning": true
+    },
+    "window.zoomLevel": -1
 }
