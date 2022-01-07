@@ -205,7 +205,9 @@ alias gobf='gbranches_raw | fzf8 | xargs git checkout' # fzf-assisted git checko
 # CLI
 ## Github
 alias ghprv='gh pr view --web'
-alias ghprc='gh pr create --fill ; gh pr view --web'
+alias ghprc='gh pr create'
+alias ghprcd='gh pr create --fill --draft ; gh pr view --web'
+
 ## Gitlab
 alias glmrv='glab mr view'
 alias glmrc='glab mr create'
