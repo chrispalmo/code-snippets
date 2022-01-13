@@ -5,6 +5,9 @@
 # Import personal profile
 source ~/dev/code-snippets/bash/.profile
 
+# Import secrets
+source ~/dev/.secrets
+
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/cjp/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/cjp/google-cloud-sdk/path.zsh.inc'; fi
 
@@ -30,33 +33,35 @@ export PATH=$PATH:/Applications/Sublime\ Text.app/Contents/SharedSupport/bin
 # Virtual environment deactivation
 function deactivate_venv() {
     venv_active=$(which deactivate)
-    if [[ $venv_active != *"deactivate not found"* ]]; then deactivate; fi 
+    if [[ $venv_active != *"deactivate not found"* ]]; then deactivate; fi
 }
 
 # Project-specific
 alias cs1="deactivate_venv; cd /Users/cjp/dev/cs1/; source .venv39/bin/activate"
-alias cs1f="cs1; cd frontend; yarn create:download-translations; npm run start-create"
-alias cs1test="cd /Users/cjp/dev/cs1/frontend; npx ng test --test-file"
-alias cs1b="cs1; backend; gulp webserver-gae"
-alias cs1installNoClean="cs1; git pull --rebase; ./installRequirements.sh; yarn install; cd libs/shared-js/; npm run build; cs1"
-alias cs1install="cs1; git pull --rebase; ./installRequirements.sh --clean; yarn install; cd libs/shared-js/; npm run build; cs1"
+alias cs1f="cs1; cd frontend; yarn create:download-translations; cs1; cd apps/create; yarn start"
+alias cs1test="cs1; cd apps/create && npx jest"
+alias cs1b="cs1; npx @bazel/bazelisk run //backend"
+alias cs1install="cs1; git pull --rebase; ./installRequirements.sh backend; source .venv39/bin/activate; ./installRequirements.sh frontend sharedjs;"
+alias cs1installClean="cs1; git pull --rebase; ./installRequirements.sh --clean;"
 alias cs1clone="git clone git@github.com:clipchamp/clipchamp-stack.git cs1; cs1install"
 
 alias cs2="deactivate_venv; cd /Users/cjp/dev/cs2/; source .venv39/bin/activate"
-alias cs2f="cs2; cd frontend; yarn create:download-translations; npm run start-create"
-alias cs2test="cd /Users/cjp/dev/cs2/frontend; npx ng test --test-file"
-alias cs2b="cs2; backend; gulp webserver-gae"
-alias cs2installNoClean="cs2; git pull --rebase; ./installRequirements.sh; yarn install; cd libs/shared-js/; npm run build; cs2"
-alias cs2install="cs2; git pull --rebase; ./installRequirements.sh --clean; yarn install; cd libs/shared-js/; npm run build; cs2"
+alias cs2f="cs2; cd frontend; yarn create:download-translations; cs2; cd apps/create; yarn start"
+alias cs2test="cs2; cd apps/create && npx jest"
+alias cs2b="cs2; npx @bazel/bazelisk run //backend;"
+alias cs2install="cs2; git pull --rebase; ./installRequirements.sh backend; source .venv39/bin/activate; ./installRequirements.sh frontend sharedjs;"
+alias cs2installClean="cs2; git pull --rebase; ./installRequirements.sh --clean;"
 alias cs2clone="git clone git@github.com:clipchamp/clipchamp-stack.git cs2; cs2install"
 
 alias cs3="deactivate_venv; cd /Users/cjp/dev/cs3/; source .venv39/bin/activate"
-alias cs3f="cs3; cd frontend; yarn create:download-translations; npm run start-create"
-alias cs3test="cd /Users/cjp/dev/cs3/frontend; npx ng test --test-file"
-alias cs3b="cs3; backend; gulp webserver-gae"
-alias cs3installNoClean="cs3; git pull --rebase; ./installRequirements.sh; yarn install; cd libs/shared-js/; npm run build; cs3"
-alias cs3install="cs3; git pull --rebase; ./installRequirements.sh --clean; yarn install; cd libs/shared-js/; npm run build; cs3"
+alias cs3f="cs3; cd frontend; yarn create:download-translations; cs3; cd apps/create; yarn start"
+alias cs3test="cs3; cd apps/create && npx jest"
+alias cs3b="cs3; npx @bazel/bazelisk run //backend"
+alias cs3install="cs3; git pull --rebase; ./installRequirements.sh backend; source .venv39/bin/activate; ./installRequirements.sh frontend sharedjs;"
+alias cs3installClean="cs3; git pull --rebase; ./installRequirements.sh --clean;"
 alias cs3clone="git clone git@github.com:clipchamp/clipchamp-stack.git cs3; cs3install"
+
+alias csinstall="gcloud auth application-default login; cs1; gomu; cs1install; cs2; gomu; cs2install; cs3; gomu; cs3install"
 
 alias ccui="cd /Users/cjp/dev/ccui/"
 alias ccuiinstall="ccui; git pull --rebase; yarn install"
