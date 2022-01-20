@@ -9,16 +9,10 @@ source ~/dev/code-snippets/bash/.profile
 source ~/dev/.secrets
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/cjp/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/cjp/google-cloud-sdk/path.zsh.inc'; fi
+if [ -f '/Users/cp/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/cp/google-cloud-sdk/path.zsh.inc'; fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f '/Users/cjp/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/cjp/google-cloud-sdk/completion.zsh.inc'; fi
-
-# Virtualenvwrapper
-# https://virtualenvwrapper.readthedocs.io/en/latest/install.html
-export WORKON_HOME=$HOME/.virtualenvs
-export PROJECT_HOME=$HOME/Devel
-source /usr/local/bin/virtualenvwrapper.sh
+if [ -f '/Users/cp/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/cp/google-cloud-sdk/completion.zsh.inc'; fi
 
 # Z Shell
 setopt auto_cd # cd by directly typing directory name
@@ -37,7 +31,7 @@ function deactivate_venv() {
 }
 
 # Project-specific
-alias cs1="deactivate_venv; cd /Users/cjp/dev/cs1/; source .venv39/bin/activate"
+alias cs1="deactivate_venv; cd /Users/cp/dev/cs1/; source .venv39/bin/activate"
 alias cs1f="cs1; cd frontend; yarn create:download-translations; cs1; cd apps/create; yarn start"
 alias cs1test="cs1; cd apps/create && npx jest"
 alias cs1ngTestFile="cs1; cd apps/create; yarn ng test --test-file"
@@ -46,7 +40,7 @@ alias cs1install="cs1; git pull --rebase; ./installRequirements.sh backend; sour
 alias cs1installClean="cs1; git pull --rebase; ./installRequirements.sh --clean;"
 alias cs1clone="git clone git@github.com:clipchamp/clipchamp-stack.git cs1; cs1install"
 
-alias cs2="deactivate_venv; cd /Users/cjp/dev/cs2/; source .venv39/bin/activate"
+alias cs2="deactivate_venv; cd /Users/cp/dev/cs2/; source .venv39/bin/activate"
 alias cs2f="cs2; cd frontend; yarn create:download-translations; cs2; cd apps/create; yarn start"
 alias cs2test="cs2; cd apps/create && npx jest"
 alias cs2ngTestFile="cs2; cd apps/create; yarn ng test --test-file"
@@ -55,7 +49,7 @@ alias cs2install="cs2; git pull --rebase; ./installRequirements.sh backend; sour
 alias cs2installClean="cs2; git pull --rebase; ./installRequirements.sh --clean;"
 alias cs2clone="git clone git@github.com:clipchamp/clipchamp-stack.git cs2; cs2install"
 
-alias cs3="deactivate_venv; cd /Users/cjp/dev/cs3/; source .venv39/bin/activate"
+alias cs3="deactivate_venv; cd /Users/cp/dev/cs3/; source .venv39/bin/activate"
 alias cs3f="cs3; cd frontend; yarn create:download-translations; cs3; cd apps/create; yarn start"
 alias cs3test="cs3; cd apps/create && npx jest"
 alias cs3ngTestFile="cs3; cd apps/create; yarn ng test --test-file"
@@ -66,32 +60,32 @@ alias cs3clone="git clone git@github.com:clipchamp/clipchamp-stack.git cs3; cs3i
 
 alias csinstall="gcloud auth application-default login; cs1; gomu; cs1install; cs2; gomu; cs2install; cs3; gomu; cs3install"
 
-alias ccui="cd /Users/cjp/dev/ccui/"
+alias ccui="cd /Users/cp/dev/ccui/"
 alias ccuiinstall="ccui; git pull --rebase; yarn install"
 alias ccuiclone="git clone git@github.com:clipchamp/ui.git ccui; ccuiinstall"
 
-alias ccr1="cd /Users/cjp/dev/clipchamp-content-repo1/"
-alias ccr1fe="cd /Users/cjp/dev/clipchamp-content-repo1/apps/portal; yarn start"
-alias ccr1be="cd /Users/cjp/dev/clipchamp-content-repo1/apps/api; yarn dev"
+alias ccr1="cd /Users/cp/dev/clipchamp-content-repo1/"
+alias ccr1fe="cd /Users/cp/dev/clipchamp-content-repo1/apps/portal; yarn start"
+alias ccr1be="cd /Users/cp/dev/clipchamp-content-repo1/apps/api; yarn dev"
 
 alias i18n="gcd; cd frontend; yarn create:download-translations"
 alias cstypecheck="yarn check-create:watch"
 
-alias db="cd /Users/cjp/Dropbox/"
-alias dt="cd /Users/cjp/Desktop/"
-alias dl="cd /Users/cjp/Downloads/"
-alias dv="cd /Users/cjp/dev/"
+alias db="cd /Users/cp/Dropbox/"
+alias dt="cd /Users/cp/Desktop/"
+alias dl="cd /Users/cp/Downloads/"
+alias dv="cd /Users/cp/dev/"
 alias lh4200="o http://localhost:4200/"
 alias ghcs="o https://github.com/clipchamp/clipchamp-stack"
 alias ghccr="o https://github.com/clipchamp/content-repository"
 alias zp="code ~/.zshrc"
 alias pp="code ~/dev/code-snippets/bash/.profile"
 
-alias sf="cd /Users/cjp/dev/sf"
-alias sfb="cd /Users/cjp/dev/sf/backend; yarn start;"
-alias sff="cd /Users/cjp/dev/sf/frontend; yarn start;"
+alias sf="cd /Users/cp/dev/sf"
+alias sfb="cd /Users/cp/dev/sf/backend; yarn start;"
+alias sff="cd /Users/cp/dev/sf/frontend; yarn start;"
 
-alias mm="cd /Users/cjp/dev/memento-mori"
+alias mm="cd /Users/cp/dev/memento-mori"
 alias mmf="mm; cd frontend; yarn start"
 alias mmb="mm; cd backend; yarn start"
 
@@ -103,7 +97,7 @@ alias mmb="mm; cd backend; yarn start"
 #=====================================================================
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/cjp/.oh-my-zsh"
+export ZSH="/Users/cp/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
