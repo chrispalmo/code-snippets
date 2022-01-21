@@ -54,5 +54,5 @@
     "gitlens.advanced.messages": {
         "suppressGitMissingWarning": true
     },
-    "window.zoomLevel": -1
+    "workbench.colorTheme": "Default High Contrast"
 }
