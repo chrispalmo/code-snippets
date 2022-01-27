@@ -41,7 +41,7 @@ export PATH="/usr/local/bin/code:$PATH"
 
 # Project-specific
 alias cs1="deactivate_venv; cd /Users/cp/dev/cs1/; source .venv39/bin/activate"
-alias cs1f="cs1; cd frontend; yarn create:download-translations; cs1; cd apps/create; yarn start"
+alias cs1f="cs1; yarn create:download-translations; cs1; cd apps/create; yarn start"
 alias cs1test="cs1; cd apps/create && npx jest"
 alias cs1ngTestFile="cs1; cd apps/create; yarn ng test --test-file"
 alias cs1b="cs1; npx @bazel/bazelisk run //apps/create:backend"
@@ -50,7 +50,7 @@ alias cs1installClean="cs1; git pull --rebase; ./installRequirements.sh --clean;
 alias cs1clone="git clone git@github.com:clipchamp/clipchamp-stack.git cs1; cs1install"
 
 alias cs2="deactivate_venv; cd /Users/cp/dev/cs2/; source .venv39/bin/activate"
-alias cs2f="cs2; cd frontend; yarn create:download-translations; cs2; cd apps/create; yarn start"
+alias cs2f="cs2; yarn create:download-translations; cs2; cd apps/create; yarn start"
 alias cs2test="cs2; cd apps/create && npx jest"
 alias cs2ngTestFile="cs2; cd apps/create; yarn ng test --test-file"
 alias cs2b="cs2; npx @bazel/bazelisk run //apps/create:backend"
@@ -59,7 +59,7 @@ alias cs2installClean="cs2; git pull --rebase; ./installRequirements.sh --clean;
 alias cs2clone="git clone git@github.com:clipchamp/clipchamp-stack.git cs2; cs2install"
 
 alias cs3="deactivate_venv; cd /Users/cp/dev/cs3/; source .venv39/bin/activate"
-alias cs3f="cs3; cd frontend; yarn create:download-translations; cs3; cd apps/create; yarn start"
+alias cs3f="cs3; yarn create:download-translations; cs3; cd apps/create; yarn start"
 alias cs3test="cs3; cd apps/create && npx jest"
 alias cs3ngTestFile="cs3; cd apps/create; yarn ng test --test-file"
 alias cs3b="cs3; npx @bazel/bazelisk run //apps/create:backend"
@@ -77,7 +77,7 @@ alias ccr1="cd /Users/cp/dev/clipchamp-content-repo1/"
 alias ccr1fe="cd /Users/cp/dev/clipchamp-content-repo1/apps/portal; yarn start"
 alias ccr1be="cd /Users/cp/dev/clipchamp-content-repo1/apps/api; yarn dev"
 
-alias i18n="gcd; cd frontend; yarn create:download-translations"
+alias i18n="gcd; yarn create:download-translations"
 alias cstypecheck="yarn check-create:watch"
 
 alias db="cd /Users/cp/Dropbox/"
@@ -199,3 +199,6 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+alias cc1="make --directory=/Users/cp/dev/cs1 --no-print-directory --"
+alias cc2="make --directory=/Users/cp/dev/cs2 --no-print-directory --"
+alias cc3="make --directory=/Users/cp/dev/cs3 --no-print-directory --"
