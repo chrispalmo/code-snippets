@@ -1,0 +1,1 @@
+defaults export com.manytricks.Moom ~/dev/code-snippets/macos/moom/moom.plist
