@@ -33,7 +33,7 @@ def combine_files(target_dir, output_file):
                 for line in lines:
                     if not line.strip().startswith('import'):
                         outfile.write(line)
-            outfile.write('```\n')
+            outfile.write('```\n\n')
 
 if __name__ == "__main__":
     target_dir = sys.argv[1]
