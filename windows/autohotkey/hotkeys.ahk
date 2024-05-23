@@ -7,3 +7,7 @@ CapsLock::Control
 ^k::Send {Up}
 ^h::Send {Left}
 ^l::Send {Right}
+^[::Send {Esc}
+
+RAlt::CapsLock
+^q::Send !{F4}
