@@ -9,5 +9,5 @@ CapsLock::Control
 ^l::Send {Right}
 ^[::Send {Esc}
 
-RAlt::CapsLock
+^Up::CapsLock
 ^q::Send !{F4}
