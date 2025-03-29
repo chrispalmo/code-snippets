@@ -1,3 +1,52 @@
+# Python virtual environment setup
+
+## using pyenv (popular for individual devs managing multiple Python versions)
+
+1. Install pyenv + pyenv-virtualenv:
+
+`curl https://pyenv.run | bash`
+
+2. Add to ~/.zshrc:
+
+```
+# The next line sets up pyenv for managing multiple Python versions 
+export PATH="$HOME/.pyenv/bin:$PATH"
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+```
+
+3. Reload / open new shell
+
+4. Check installation
+
+```
+pyenv version
+pyenv doctor
+```
+
+5. Install Python and create virtual environment
+
+```
+pyenv install 3.11.8
+pyenv virtualenv 3.11.8 my-env
+```
+
+6. In project folder:
+
+`echo "my-env" > .python-version`
+
+Now, pyenv will auto-activate my-env when you cd into this folder.
+
+7. Verify
+
+```
+python --version   # Should show Python 3.11.8
+which python       # Should point to pyenv's shims
+```
+
+## using venv (built-in) (Default for projects using system or Docker Python)
+
 Check python version (might need to use `python3` depending on how the system `PATH` variable is set up):
 
 `py --version`
