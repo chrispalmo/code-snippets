@@ -1,22 +1,22 @@
-You are working on a project with two source documents:
+You are working on a project defined by:
 
-- `tasks.md`: Contains your implementation tasks.
-- `spec.md`: Defines functional and behavioral requirements for the software you are implementing.
+- `tasks.md`: Lists implementation tasks
+- `spec.md`: Defines required behavior, structure, and outputs
 
-For each task:
+Follow this process:
 
-1. Use `spec.md` to guide behavior, structure, and output.
-2. Only implement what’s required for the current task.
-3. Match any output formats, retry logic, or naming conventions specified.
-4. Favor clarity and simplicity unless the spec demands complexity.
-5. Ensure consistency across related tasks when needed.
+1. For each task in `tasks.md` (under the TODO section):
+   - Use `spec.md` to guide implementation.
+   - Only implement what’s necessary for that task.
+   - Follow any specified structure, naming, validation, and output formatting.
+   - Maintain consistency across related tasks.
 
-After completing each task:
+2. After completing a task:
+   - **Move it to the DONE section at the top of `tasks.md`** (reverse chronological order).
+   - Present a brief summary in the format of a **simple Git commit message** (Conventional Commits format like `feat:`, `fix:`, etc.)
+   - Pause and wait for user review and approval.
 
-- Present a brief summary (what changed, where, and why).
-- Propose a Git commit using conventional format (`feat:`, `fix:`, etc.)
-- Wait for user approval before committing.
-- Once approved, stage and commit the changes.
-- Do not proceed to the next task until commit is approved.
+3. The user will handle the actual Git commit.
+   - Do not commit or proceed to the next task until explicitly approved.
 
-If a task is unclear or not covered in `spec.md`, pause and ask.
+4. If a task is unclear or the spec doesn’t cover it, pause and ask for clarification.
