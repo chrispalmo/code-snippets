@@ -1,25 +1,20 @@
 import argparse
 import ast
-import os
 from pathlib import Path
 
-def extract_summary_from_file(filepath, include_docstrings=True):
-    with open(filepath, "r", encoding="utf-8") as f:
-        source = f.read()
-
+def extract_signatures(filepath, include_docstrings=True):
+    """
+    Extract function and class signatures (with optional docstrings) from a Python file.
+    Returns content wrapped in Markdown code block format.
+    """
     try:
+        with open(filepath, "r", encoding="utf-8") as f:
+            source = f.read()
         tree = ast.parse(source, filename=filepath)
-    except SyntaxError:
-        return f"# Skipped {filepath} due to syntax error"
+    except Exception as e:
+        return f"{filepath}\n```python\n# Skipped: {e}\n```\n"
 
     lines = []
-    rel_path = str(filepath)
-    lines.append(f"{rel_path}>>>")
-
-    # Collect import statements
-    for node in tree.body:
-        if isinstance(node, (ast.Import, ast.ImportFrom)):
-            lines.append(source.splitlines()[node.lineno - 1])
 
     def format_args(args_node):
         args = []
@@ -39,48 +34,67 @@ def extract_summary_from_file(filepath, include_docstrings=True):
             args.append(f"**{args_node.kwarg.arg}")
         return ", ".join(args)
 
-    def summarize_function(node, prefix="def"):
-        sig = f"{prefix} {node.name}({format_args(node.args)})"
+    def summarize_function(node, indent=""):
+        prefix = "async def" if isinstance(node, ast.AsyncFunctionDef) else "def"
+        sig = f"{indent}{prefix} {node.name}({format_args(node.args)})"
         if node.returns:
             sig += f" -> {ast.unparse(node.returns)}"
         sig += ":"
         lines.append(sig)
         if include_docstrings and (doc := ast.get_docstring(node)):
-            lines.append(f'    """{doc}"""')
+            lines.append(f'{indent}    """{doc}"""')
 
     for node in tree.body:
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-            summarize_function(node, prefix="async def" if isinstance(node, ast.AsyncFunctionDef) else "def")
-
+            summarize_function(node)
         elif isinstance(node, ast.ClassDef):
             lines.append(f"class {node.name}:")
             if include_docstrings and (doc := ast.get_docstring(node)):
                 lines.append(f'    """{doc}"""')
             for item in node.body:
                 if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                    summarize_function(item, prefix="    async def" if isinstance(item, ast.AsyncFunctionDef) else "    def")
+                    summarize_function(item, indent="    ")
 
-    lines.append("<<<\n")
-    return "\n".join(lines)
+    return f"{filepath}\n```python\n" + "\n".join(lines) + "\n```\n"
+
+def dump_file_contents(filepath):
+    """
+    Return entire file contents wrapped in Markdown code block format.
+    """
+    try:
+        with open(filepath, "r", encoding="utf-8") as f:
+            content = f.read()
+        return f"{filepath}\n```python\n{content.rstrip()}\n```\n"
+    except Exception as e:
+        return f"{filepath}\n```python\n# Error reading file: {e}\n```\n"
 
 def main():
-    parser = argparse.ArgumentParser(description="Summarize Python source files for LLM context.")
-    parser.add_argument("project_dir", help="Path to the project directory")
-    parser.add_argument("--no-docstrings", action="store_true", help="Exclude docstrings from output")
+    """
+    CLI entry point. Use:
+        python summarize-python-project.py <project_dir> <output_file> [--signatures-only] [--no-docstrings]
+    """
+    parser = argparse.ArgumentParser(description="Summarize or dump Python files in a directory.")
+    parser.add_argument("project_dir", help="Directory to scan recursively for .py files")
+    parser.add_argument("output_file", help="Path to output file where results will be written")
+    parser.add_argument("--no-docstrings", action="store_true", help="Exclude docstrings from summary output")
+    parser.add_argument("--signatures-only", action="store_true", help="Only output function/class signatures and imports")
     args = parser.parse_args()
 
-    project_path = Path(args.project_dir)
     include_docstrings = not args.no_docstrings
+    project_path = Path(args.project_dir)
+    output_path = Path(args.output_file)
 
     all_output = []
 
     for filepath in project_path.rglob("*.py"):
         if filepath.is_file():
-            summary = extract_summary_from_file(filepath, include_docstrings)
+            if args.signatures_only:
+                summary = extract_signatures(filepath, include_docstrings)
+            else:
+                summary = dump_file_contents(filepath)
             all_output.append(summary)
 
-    print("\n".join(all_output))
+    output_path.write_text("".join(all_output), encoding="utf-8")
 
 if __name__ == "__main__":
     main()
-
