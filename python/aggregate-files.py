@@ -3,11 +3,12 @@
 aggregate-files.py
 
 Recursively reads all files from a given project directory and aggregates their
-contents into a single text file, preserving file boundaries. Supports optional
-output directory and basic .gitignore-style pattern filtering.
+contents into a single Markdown file, preserving file boundaries with fenced
+code blocks. Supports optional output directory, .gitignore-style filtering, 
+and explicit exclusions.
 
 Usage:
-    python3 aggregate-files.py project-folder [output-folder] --gitignore path/to/.gitignore
+    python3 aggregate-files.py project-folder [output-folder] --gitignore path/to/.gitignore --exclude file1.js file2.ts "*.test.js"
 
 Positional arguments:
     project-folder      Path to the root of the project to scan.
@@ -16,11 +17,12 @@ Positional arguments:
 Optional arguments:
     --gitignore         Path to a .gitignore file.
                         Only basic glob patterns are supported (e.g. "*.js", "node_modules/*").
-                        Advanced rules like negation (!), directory anchors (/), and recursive wildcards (**) are not supported.
-                        Patterns are matched against paths relative to the project root, using forward slashes.
+                        Patterns are matched relative to the project root using forward slashes.
+    --exclude           List of explicit files or glob patterns to exclude, provided last.
 
 The output file is named <repo-name>_<timestamp>.md and contains each file's
-relative path, its contents, and a delimiter.
+relative path, its contents, and a fenced code block using the file extension
+as the language identifier.
 """
 
 import os
@@ -34,23 +36,16 @@ from typing import List, Set
 
 def parse_arguments():
     """Parses command-line arguments."""
-    parser = argparse.ArgumentParser(description="Aggregate all project files into a single summary file.")
+    parser = argparse.ArgumentParser(description="Aggregate all project files into a single Markdown summary.")
     parser.add_argument("project_folder", help="Path to the project directory.")
     parser.add_argument("output_folder", nargs="?", default=".", help="Directory to save the output summary.")
     parser.add_argument("--gitignore", help="Optional path to a .gitignore file.")
+    parser.add_argument("--exclude", nargs="*", default=[], help="Explicit file paths or glob patterns to exclude (must be last).")
     return parser.parse_args()
 
 
 def get_repo_name(path: str) -> str:
-    """
-    Returns the name of the project directory.
-
-    Args:
-        path: Path to the project directory.
-
-    Returns:
-        The base name of the directory.
-    """
+    """Returns the base name of the project directory."""
     return os.path.basename(os.path.abspath(path))
 
 
@@ -69,62 +64,77 @@ def load_gitignore_patterns(gitignore_path: str) -> Set[str]:
         with open(gitignore_path, "r", encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
-                if line and not line.startswith("#"):
-                    patterns.add(line)
+                if not line or line.startswith("#") or line.startswith("!"):
+                    continue
+                patterns.add(line.replace("\\", "/"))
     except Exception as e:
         print(f"Warning: Failed to load .gitignore file: {e}")
     return patterns
 
 
-def is_ignored(path: str, ignore_patterns: Set[str]) -> bool:
+def is_ignored(path: str, ignore_patterns: Set[str], exclude_patterns: Set[str]) -> bool:
     """
     Checks if a file path should be ignored based on glob-style patterns.
-
-    Args:
-        path: Relative path to the file.
-        ignore_patterns: Set of glob patterns from .gitignore.
-
-    Returns:
-        True if the file should be ignored, False otherwise.
+    - If the pattern ends with '/', it's treated as a directory prefix.
+    - Otherwise, it's treated as a fnmatch glob.
     """
     normalized_path = path.replace(os.sep, "/")
-    for pattern in ignore_patterns:
+    all_patterns = ignore_patterns.union(exclude_patterns)
+
+    for pattern in all_patterns:
+        pattern = pattern.strip().replace("\\", "/")
+
+        if not pattern or pattern.startswith("!"):
+            continue
+
+        if pattern.endswith("/"):
+            # Match directory path prefixes
+            if normalized_path.startswith(pattern):
+                return True
+
         if fnmatch.fnmatch(normalized_path, pattern):
             return True
+
     return False
 
 
-def collect_file_paths(root: str, ignore_patterns: Set[str]) -> List[str]:
+def collect_file_paths(root: str, ignore_patterns: Set[str], exclude_patterns: Set[str]) -> List[str]:
     """
-    Walks through the directory and collects file paths, skipping ignored files.
+    Recursively collects all file paths in a directory, excluding ignored ones.
 
     Args:
-        root: Project root directory.
-        ignore_patterns: Set of glob-style patterns.
+        root: Root directory.
+        ignore_patterns: Patterns from .gitignore.
+        exclude_patterns: Patterns from --exclude.
 
     Returns:
         List of relative file paths.
     """
     file_paths = []
-    for dirpath, _, files in os.walk(root):
+    for dirpath, dirs, files in os.walk(root):
+        # Prune ignored directories before descending
+        dirs[:] = [
+            d for d in dirs
+            if not is_ignored(os.path.relpath(os.path.join(dirpath, d), root), ignore_patterns, exclude_patterns)
+        ]
         for file in files:
             if file.startswith("."):
                 continue
             full_path = os.path.join(dirpath, file)
             rel_path = os.path.relpath(full_path, root)
-            if not is_ignored(rel_path, ignore_patterns):
+            if not is_ignored(rel_path, ignore_patterns, exclude_patterns):
                 file_paths.append(rel_path)
     return file_paths
 
 
 def write_summary(output_path: str, root: str, file_paths: List[str]):
     """
-    Writes the contents of all specified files into a single summary file.
+    Writes the contents of all specified files into a Markdown file.
 
     Args:
-        output_path: Path to the output file.
-        root: Root directory of the project.
-        file_paths: List of file paths relative to the root.
+        output_path: Destination .md file path.
+        root: Root project directory.
+        file_paths: List of relative file paths to include.
     """
     with open(output_path, "w", encoding="utf-8") as out:
         for rel_path in file_paths:
@@ -149,6 +159,7 @@ def main():
     project_root = os.path.abspath(args.project_folder)
     output_dir = os.path.abspath(args.output_folder)
     gitignore_path = args.gitignore
+    exclude_patterns = set(args.exclude)
 
     if not os.path.isdir(project_root):
         print(f"Error: {project_root} is not a valid directory.")
@@ -164,7 +175,8 @@ def main():
     output_path = os.path.join(output_dir, output_filename)
 
     ignore_patterns = load_gitignore_patterns(gitignore_path) if gitignore_path else set()
-    file_paths = collect_file_paths(project_root, ignore_patterns)
+    file_paths = collect_file_paths(project_root, ignore_patterns, exclude_patterns)
+    file_paths.sort()
     write_summary(output_path, project_root, file_paths)
 
 
