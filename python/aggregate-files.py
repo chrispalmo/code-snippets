@@ -3,37 +3,19 @@
 import argparse
 import subprocess
 import sys
-import re
 from datetime import datetime
 from pathlib import Path
-from typing import List, Set
+from typing import List, Optional
+import pathspec
 
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(description="Aggregate all project files into a single Markdown summary.")
-    parser.add_argument("project_folder", help="Path to the root of the project to scan.")
-    parser.add_argument("output_folder", nargs="?", default=".", help="Directory to save the output summary.")
-    parser.add_argument("--gitignore", help="Optional path to a .gitignore-style file for additional ignores.")
-    parser.add_argument("--exclude-regex", help="Optional regex to exclude files by path.")
-    parser.add_argument("--debug", action="store_true", help="Show detailed file read errors.")
+    parser = argparse.ArgumentParser(description="Aggregate project files into a single Markdown file.")
+    parser.add_argument("project_folder", help="Path to the root of the Git project.")
+    parser.add_argument("output_folder", nargs="?", default=".", help="Directory to save the output file.")
+    parser.add_argument("--gitignore", help="Path to a .gitignore-style file (like .llmignore).")
+    parser.add_argument("--debug", action="store_true", help="Show detailed output and read errors.")
     return parser.parse_args()
-
-
-def get_repo_name(path: Path) -> str:
-    return path.name
-
-
-def load_extra_gitignore_patterns(gitignore_path: Path) -> Set[str]:
-    patterns = set()
-    try:
-        with gitignore_path.open("r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if line and not line.startswith("#") and not line.startswith("!"):
-                    patterns.add(line)
-    except Exception as e:
-        print(f"Warning: Failed to load extra .gitignore file: {e}")
-    return patterns
 
 
 def run_git_ls_files(repo_path: Path) -> List[str]:
@@ -42,35 +24,75 @@ def run_git_ls_files(repo_path: Path) -> List[str]:
             ["git", "-C", str(repo_path), "ls-files", "--cached", "--others", "--exclude-standard"],
             capture_output=True,
             text=True,
-            check=True
+            check=True,
         )
         return result.stdout.strip().splitlines()
     except subprocess.CalledProcessError as e:
-        print(f"Error: Failed to run git ls-files: {e}")
+        print(f"❌ Error: git ls-files failed:\n{e.stderr}")
         sys.exit(1)
 
 
-def apply_manual_filters(paths: List[str], repo_path: Path, extra_patterns: Set[str], regex: str | None) -> List[str]:
-    filtered = []
-    for path in paths:
-        abs_path = repo_path / path
-        if not abs_path.is_file():
-            continue
-        if any(Path(path).match(p) for p in extra_patterns):
-            continue
-        if regex and re.search(regex, path):
-            continue
-        filtered.append(path)
-    return filtered
+def load_pathspec(gitignore_path: Optional[Path], debug: bool) -> Optional[pathspec.PathSpec]:
+    if not gitignore_path or not gitignore_path.is_file():
+        if debug:
+            print("❌ .llmignore path is invalid or missing")
+        return None
+
+    with gitignore_path.open("r", encoding="utf-8") as f:
+        raw_lines = [line.strip() for line in f if line.strip() and not line.strip().startswith("#")]
+
+    processed = []
+    for line in raw_lines:
+        if "/" not in line and not line.startswith("**/"):
+            processed.append(f"**/{line}")
+        else:
+            processed.append(line)
+
+    if debug:
+        print(f"✅ Loaded {len(processed)} processed patterns from {gitignore_path}")
+        for pat in processed:
+            print(f"   - {pat}")
+
+    return pathspec.PathSpec.from_lines("gitwildmatch", processed)
 
 
-def write_summary(output_path: Path, root: Path, file_paths: List[str], debug: bool) -> tuple[int, int, List[str]]:
+def filter_with_pathspec(files: List[str], spec: Optional[pathspec.PathSpec], debug: bool) -> List[str]:
+    if not spec:
+        if debug:
+            print("⚠️  No extra ignore patterns provided.")
+        return files
+
+    kept = []
+    for f in files:
+        if spec.match_file(f):
+            if debug:
+                print(f"❌ Excluded by .llmignore: {f}")
+        else:
+            kept.append(f)
+
+    if debug:
+        print(f"✅ Kept {len(kept)} / {len(files)} files after filtering.")
+    return kept
+
+
+def human_readable_size(path: Path) -> str:
+    size = path.stat().st_size
+    for unit in ["B", "KB", "MB", "GB"]:
+        if size < 1024:
+            return f"{size:.1f} {unit}"
+        size /= 1024
+    return f"{size:.1f} TB"
+
+
+def write_aggregate_markdown(
+    repo_root: Path, output_path: Path, files: List[str], debug: bool
+) -> tuple[int, int, list[str]]:
     total_lines = 0
     errors = []
 
     with output_path.open("w", encoding="utf-8") as out:
-        for rel_path in file_paths:
-            full_path = root / rel_path
+        for rel_path in files:
+            full_path = repo_root / rel_path
             ext = full_path.suffix.lstrip(".")
             out.write(f"{rel_path}\n")
             out.write(f"```{ext}\n")
@@ -80,69 +102,56 @@ def write_summary(output_path: Path, root: Path, file_paths: List[str], debug: b
                         out.write(line)
                         total_lines += 1
             except UnicodeDecodeError:
-                msg = f"{rel_path} [Skipped: non-UTF-8]"
-                errors.append(msg)
-                out.write("[Skipped binary or non-UTF-8 file]\n")
+                errors.append(f"{rel_path} [non-UTF-8]")
+                out.write("[Skipped non-UTF-8 file]\n")
             except Exception as e:
-                msg = f"{rel_path} [Error: {e}]"
-                errors.append(msg)
+                errors.append(f"{rel_path} [Error: {e}]")
                 out.write(f"[Error reading file: {e}]\n")
             out.write("```\n\n")
 
-    return len(file_paths), total_lines, errors
-
-
-def human_readable_size(filepath: Path) -> str:
-    size_bytes = filepath.stat().st_size
-    for unit in ["B", "KB", "MB", "GB"]:
-        if size_bytes < 1024:
-            return f"{size_bytes:.1f} {unit}"
-        size_bytes /= 1024
-    return f"{size_bytes:.1f} TB"
+    return len(files), total_lines, errors
 
 
 def main():
     args = parse_arguments()
-
     project_root = Path(args.project_folder).resolve()
     output_dir = Path(args.output_folder).resolve()
 
-    if not project_root.is_dir():
-        print(f"Error: {project_root} is not a valid directory.")
+    if not (project_root / ".git").is_dir():
+        print(f"❌ Error: {project_root} is not a Git repository.")
         sys.exit(1)
 
-    if not (project_root / ".git").exists():
-        print(f"Error: {project_root} is not a Git repository.")
-        sys.exit(1)
-
-    if not output_dir.is_dir():
-        print(f"Error: {output_dir} is not a valid output directory.")
-        sys.exit(1)
-
-    repo_name = get_repo_name(project_root)
+    output_dir.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
-    output_filename = f"{repo_name}_{timestamp}.md"
-    output_path = output_dir / output_filename
+    output_path = output_dir / f"{project_root.name}_{timestamp}.md"
 
-    print(f"🔍 Scanning: {project_root}")
+    if args.debug:
+        print(f"🔍 Scanning Git repo: {project_root}")
 
-    base_files = run_git_ls_files(project_root)
-    extra_patterns = load_extra_gitignore_patterns(Path(args.gitignore)) if args.gitignore else set()
-    filtered_files = apply_manual_filters(base_files, project_root, extra_patterns, args.exclude_regex)
-    filtered_files.sort()
+    all_git_files = run_git_ls_files(project_root)
+    spec = load_pathspec(Path(args.gitignore), args.debug) if args.gitignore else None
+    final_files = filter_with_pathspec(all_git_files, spec, args.debug)
+    final_files.sort()
 
-    file_count, total_lines, errors = write_summary(output_path, project_root, filtered_files, args.debug)
-    file_size = human_readable_size(output_path)
+    if args.debug:
+        print("\n🔎 Final included files:")
+        for f in final_files:
+            full_path = project_root / f
+            size_kb = full_path.stat().st_size / 1024
+            print(f"  {f} — {size_kb:.1f} KB")
+
+    file_count, line_count, errors = write_aggregate_markdown(project_root, output_path, final_files, args.debug)
+    size_str = human_readable_size(output_path)
 
     print(f"\n✅ Processed {file_count} files from {project_root}")
-    print(f"📄 Aggregated output has {total_lines:,} lines")
-    print(f"📦 Total size: {file_size}")
-    print(f"📁 Saved to: {output_path}")
+    print(f"📄 Total lines: {line_count:,}")
+    print(f"📦 File size: {size_str}")
+    print(f"📁 Output: {output_path}")
 
     if errors:
-        print(f"⚠️ Encountered {len(errors)} file read errors.")
+        print(f"⚠️  Encountered {len(errors)} read errors")
         if args.debug:
-            print("\n--- Error Log ---")
+            print("\n--- Read Errors ---")
             for err in errors:
                 print(err)
 

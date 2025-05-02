@@ -1,12 +1,6 @@
+.git/
+node_modules/
+*.lock
 requirements.txt
 requirements-dev.txt
-package.lock
-yarn.lock
-node_modules/*
-node_modules/
-node_modules
-.git/*
-.git/
-.git
-
 
