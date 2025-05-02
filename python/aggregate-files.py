@@ -1,183 +1,150 @@
 #!/usr/bin/env python3
-"""
-aggregate-files.py
 
-Recursively reads all files from a given project directory and aggregates their
-contents into a single Markdown file, preserving file boundaries with fenced
-code blocks. Supports optional output directory, .gitignore-style filtering, 
-and explicit exclusions.
-
-Usage:
-    python3 aggregate-files.py project-folder [output-folder] --gitignore path/to/.gitignore --exclude file1.js file2.ts "*.test.js"
-
-Positional arguments:
-    project-folder      Path to the root of the project to scan.
-    output-folder       Directory to save the summary file. Defaults to the current working directory.
-
-Optional arguments:
-    --gitignore         Path to a .gitignore file.
-                        Only basic glob patterns are supported (e.g. "*.js", "node_modules/*").
-                        Patterns are matched relative to the project root using forward slashes.
-    --exclude           List of explicit files or glob patterns to exclude, provided last.
-
-The output file is named <repo-name>_<timestamp>.md and contains each file's
-relative path, its contents, and a fenced code block using the file extension
-as the language identifier.
-"""
-
-import os
-import sys
 import argparse
-import fnmatch
+import subprocess
+import sys
+import re
 from datetime import datetime
 from pathlib import Path
 from typing import List, Set
 
 
 def parse_arguments():
-    """Parses command-line arguments."""
     parser = argparse.ArgumentParser(description="Aggregate all project files into a single Markdown summary.")
-    parser.add_argument("project_folder", help="Path to the project directory.")
+    parser.add_argument("project_folder", help="Path to the root of the project to scan.")
     parser.add_argument("output_folder", nargs="?", default=".", help="Directory to save the output summary.")
-    parser.add_argument("--gitignore", help="Optional path to a .gitignore file.")
-    parser.add_argument("--exclude", nargs="*", default=[], help="Explicit file paths or glob patterns to exclude (must be last).")
+    parser.add_argument("--gitignore", help="Optional path to a .gitignore-style file for additional ignores.")
+    parser.add_argument("--exclude-regex", help="Optional regex to exclude files by path.")
+    parser.add_argument("--debug", action="store_true", help="Show detailed file read errors.")
     return parser.parse_args()
 
 
-def get_repo_name(path: str) -> str:
-    """Returns the base name of the project directory."""
-    return os.path.basename(os.path.abspath(path))
+def get_repo_name(path: Path) -> str:
+    return path.name
 
 
-def load_gitignore_patterns(gitignore_path: str) -> Set[str]:
-    """
-    Loads basic ignore patterns from a .gitignore file.
-
-    Args:
-        gitignore_path: Path to the .gitignore file.
-
-    Returns:
-        A set of glob-style ignore patterns.
-    """
+def load_extra_gitignore_patterns(gitignore_path: Path) -> Set[str]:
     patterns = set()
     try:
-        with open(gitignore_path, "r", encoding="utf-8") as f:
+        with gitignore_path.open("r", encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
-                if not line or line.startswith("#") or line.startswith("!"):
-                    continue
-                patterns.add(line.replace("\\", "/"))
+                if line and not line.startswith("#") and not line.startswith("!"):
+                    patterns.add(line)
     except Exception as e:
-        print(f"Warning: Failed to load .gitignore file: {e}")
+        print(f"Warning: Failed to load extra .gitignore file: {e}")
     return patterns
 
 
-def is_ignored(path: str, ignore_patterns: Set[str], exclude_patterns: Set[str]) -> bool:
-    """
-    Checks if a file path should be ignored based on glob-style patterns.
-    - If the pattern ends with '/', it's treated as a directory prefix.
-    - Otherwise, it's treated as a fnmatch glob.
-    """
-    normalized_path = path.replace(os.sep, "/")
-    all_patterns = ignore_patterns.union(exclude_patterns)
+def run_git_ls_files(repo_path: Path) -> List[str]:
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(repo_path), "ls-files", "--cached", "--others", "--exclude-standard"],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        return result.stdout.strip().splitlines()
+    except subprocess.CalledProcessError as e:
+        print(f"Error: Failed to run git ls-files: {e}")
+        sys.exit(1)
 
-    for pattern in all_patterns:
-        pattern = pattern.strip().replace("\\", "/")
 
-        if not pattern or pattern.startswith("!"):
+def apply_manual_filters(paths: List[str], repo_path: Path, extra_patterns: Set[str], regex: str | None) -> List[str]:
+    filtered = []
+    for path in paths:
+        abs_path = repo_path / path
+        if not abs_path.is_file():
             continue
-
-        if pattern.endswith("/"):
-            # Match directory path prefixes
-            if normalized_path.startswith(pattern):
-                return True
-
-        if fnmatch.fnmatch(normalized_path, pattern):
-            return True
-
-    return False
+        if any(Path(path).match(p) for p in extra_patterns):
+            continue
+        if regex and re.search(regex, path):
+            continue
+        filtered.append(path)
+    return filtered
 
 
-def collect_file_paths(root: str, ignore_patterns: Set[str], exclude_patterns: Set[str]) -> List[str]:
-    """
-    Recursively collects all file paths in a directory, excluding ignored ones.
+def write_summary(output_path: Path, root: Path, file_paths: List[str], debug: bool) -> tuple[int, int, List[str]]:
+    total_lines = 0
+    errors = []
 
-    Args:
-        root: Root directory.
-        ignore_patterns: Patterns from .gitignore.
-        exclude_patterns: Patterns from --exclude.
-
-    Returns:
-        List of relative file paths.
-    """
-    file_paths = []
-    for dirpath, dirs, files in os.walk(root):
-        # Prune ignored directories before descending
-        dirs[:] = [
-            d for d in dirs
-            if not is_ignored(os.path.relpath(os.path.join(dirpath, d), root), ignore_patterns, exclude_patterns)
-        ]
-        for file in files:
-            if file.startswith("."):
-                continue
-            full_path = os.path.join(dirpath, file)
-            rel_path = os.path.relpath(full_path, root)
-            if not is_ignored(rel_path, ignore_patterns, exclude_patterns):
-                file_paths.append(rel_path)
-    return file_paths
-
-
-def write_summary(output_path: str, root: str, file_paths: List[str]):
-    """
-    Writes the contents of all specified files into a Markdown file.
-
-    Args:
-        output_path: Destination .md file path.
-        root: Root project directory.
-        file_paths: List of relative file paths to include.
-    """
-    with open(output_path, "w", encoding="utf-8") as out:
+    with output_path.open("w", encoding="utf-8") as out:
         for rel_path in file_paths:
-            full_path = os.path.join(root, rel_path)
-            ext = Path(rel_path).suffix.lstrip(".") or ""
+            full_path = root / rel_path
+            ext = full_path.suffix.lstrip(".")
             out.write(f"{rel_path}\n")
             out.write(f"```{ext}\n")
             try:
-                with open(full_path, "r", encoding="utf-8") as f:
-                    out.write(f.read())
+                with full_path.open("r", encoding="utf-8") as f:
+                    for line in f:
+                        out.write(line)
+                        total_lines += 1
             except UnicodeDecodeError:
-                out.write("[Skipped binary or non-UTF-8 file]")
+                msg = f"{rel_path} [Skipped: non-UTF-8]"
+                errors.append(msg)
+                out.write("[Skipped binary or non-UTF-8 file]\n")
             except Exception as e:
-                out.write(f"[Error reading file: {e}]")
-            out.write("\n```\n\n")
-    print(f"Summary written to: {output_path}")
+                msg = f"{rel_path} [Error: {e}]"
+                errors.append(msg)
+                out.write(f"[Error reading file: {e}]\n")
+            out.write("```\n\n")
+
+    return len(file_paths), total_lines, errors
+
+
+def human_readable_size(filepath: Path) -> str:
+    size_bytes = filepath.stat().st_size
+    for unit in ["B", "KB", "MB", "GB"]:
+        if size_bytes < 1024:
+            return f"{size_bytes:.1f} {unit}"
+        size_bytes /= 1024
+    return f"{size_bytes:.1f} TB"
 
 
 def main():
     args = parse_arguments()
 
-    project_root = os.path.abspath(args.project_folder)
-    output_dir = os.path.abspath(args.output_folder)
-    gitignore_path = args.gitignore
-    exclude_patterns = set(args.exclude)
+    project_root = Path(args.project_folder).resolve()
+    output_dir = Path(args.output_folder).resolve()
 
-    if not os.path.isdir(project_root):
+    if not project_root.is_dir():
         print(f"Error: {project_root} is not a valid directory.")
         sys.exit(1)
 
-    if not os.path.isdir(output_dir):
+    if not (project_root / ".git").exists():
+        print(f"Error: {project_root} is not a Git repository.")
+        sys.exit(1)
+
+    if not output_dir.is_dir():
         print(f"Error: {output_dir} is not a valid output directory.")
         sys.exit(1)
 
     repo_name = get_repo_name(project_root)
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H%M")
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
     output_filename = f"{repo_name}_{timestamp}.md"
-    output_path = os.path.join(output_dir, output_filename)
+    output_path = output_dir / output_filename
 
-    ignore_patterns = load_gitignore_patterns(gitignore_path) if gitignore_path else set()
-    file_paths = collect_file_paths(project_root, ignore_patterns, exclude_patterns)
-    file_paths.sort()
-    write_summary(output_path, project_root, file_paths)
+    print(f"🔍 Scanning: {project_root}")
+
+    base_files = run_git_ls_files(project_root)
+    extra_patterns = load_extra_gitignore_patterns(Path(args.gitignore)) if args.gitignore else set()
+    filtered_files = apply_manual_filters(base_files, project_root, extra_patterns, args.exclude_regex)
+    filtered_files.sort()
+
+    file_count, total_lines, errors = write_summary(output_path, project_root, filtered_files, args.debug)
+    file_size = human_readable_size(output_path)
+
+    print(f"\n✅ Processed {file_count} files from {project_root}")
+    print(f"📄 Aggregated output has {total_lines:,} lines")
+    print(f"📦 Total size: {file_size}")
+    print(f"📁 Saved to: {output_path}")
+
+    if errors:
+        print(f"⚠️ Encountered {len(errors)} file read errors.")
+        if args.debug:
+            print("\n--- Error Log ---")
+            for err in errors:
+                print(err)
 
 
 if __name__ == "__main__":
