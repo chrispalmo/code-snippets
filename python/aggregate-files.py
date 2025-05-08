@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
 
+# built-in dependencies
 import argparse
 import subprocess
 import sys
+import os
 from datetime import datetime
+from io import StringIO
 from pathlib import Path
 from typing import List, Optional
+
+# external dependencies
 import pathspec
 import pyperclip
 
@@ -57,8 +62,8 @@ def load_pathspec(gitignore_path: Optional[Path], debug: bool) -> Optional[paths
         else:
             processed.append(line)
 
+    print(f"✅ Loaded {len(processed)} processed patterns from {gitignore_path}")
     if debug:
-        print(f"✅ Loaded {len(processed)} processed patterns from {gitignore_path}")
         for pat in processed:
             print(f"   - {pat}")
 
@@ -79,8 +84,7 @@ def filter_with_pathspec(files: List[str], spec: Optional[pathspec.PathSpec], de
         else:
             kept.append(f)
 
-    if debug:
-        print(f"✅ Kept {len(kept)} / {len(files)} files after filtering.")
+    print(f"✅ Kept {len(kept)} / {len(files)} files after filtering.")
     return kept
 
 
@@ -155,8 +159,8 @@ def main():
             print(f"🔍 Scanning Git repo: {project_root}")
         all_git_files = run_git_ls_files(project_root)
     else:
-        project_root = Path(".").resolve()
-        all_git_files = [str(Path(f).resolve().relative_to(project_root)) for f in args.files]
+        all_git_files = [str(Path(f).resolve()) for f in args.files]
+        project_root = Path(os.path.commonpath(all_git_files)).resolve()
 
     spec = load_pathspec(Path(args.gitignore), args.debug) if args.gitignore else None
     final_files = filter_with_pathspec(all_git_files, spec, args.debug)
@@ -169,50 +173,53 @@ def main():
             size_kb = full_path.stat().st_size / 1024
             print(f"  {f} — {size_kb:.1f} KB")
 
-    errors = []
-    file_count = line_count = 0
-
+    buffer = StringIO()
+    file_count, line_count, errors = write_aggregate_markdown(project_root, buffer, final_files, args.debug)
+    text = buffer.getvalue()
+    
+    wrote_to_file = False
+    copied_to_clipboard = False
+    
     if args.output_dir:
         output_dir = Path(args.output_dir).resolve()
         output_dir.mkdir(parents=True, exist_ok=True)
         timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
         output_path = output_dir / f"{project_root.name}_{timestamp}.md"
-        file_count, line_count, errors = write_aggregate_markdown(project_root, output_path, final_files, args.debug)
+        output_path.write_text(text, encoding="utf-8")
+        wrote_to_file = True
         size_str = human_readable_size(output_path)
-
-        print(f"\n✅ Processed {file_count} files from {project_root}")
-        print(f"📄 Total lines: {line_count:,}")
-        print(f"📦 File size: {size_str}")
-        print(f"📁 Output: {output_path}")
-
+    
     if args.to_clipboard:
-        from io import StringIO
-        buffer = StringIO()
-        file_count, line_count, errors = write_aggregate_markdown(project_root, buffer, final_files, args.debug)
-        text = buffer.getvalue()
-        size_kb = len(text.encode("utf-8")) / 1024
         if pyperclip:
             try:
                 pyperclip.copy(text)
-                print("\n📋 Output copied to clipboard.")
+                copied_to_clipboard = True
             except Exception as e:
                 print(f"⚠️ Could not copy to clipboard: {e}")
         else:
             print("⚠️ pyperclip not installed. Output was not copied.")
-        print(f"\n✅ Processed {file_count} files from {project_root}")
-        print(f"📄 Total lines: {line_count:,}")
-        print(f"📦 Estimated size: {size_kb:.1f} KB")
-
-    if not args.output_dir and not args.to_clipboard:
+    
+    # ✅ Unified log summary
+    print(f"✅ Processed {file_count} files from {project_root}")
+    print(f"📄 Total lines: {line_count:,}")
+    
+    if wrote_to_file:
+        print(f"📦 File size: {size_str}")
+        print(f"📁 Output: {output_path}")
+    
+    if copied_to_clipboard:
+        size_kb = len(text.encode("utf-8")) / 1024
+        print(f"📋 Output copied to clipboard ({size_kb:.1f} KB)")
+    
+    if not wrote_to_file and not copied_to_clipboard:
         print("⚠️ No output location specified. Use --output-dir or --to-clipboard.")
-
+    
     if errors:
         print(f"⚠️  Encountered {len(errors)} read errors")
         if args.debug:
             print("\n--- Read Errors ---")
             for err in errors:
                 print(err)
-
 
 if __name__ == "__main__":
     main()
